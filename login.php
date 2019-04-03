@@ -5,7 +5,7 @@ require('function.php');
 debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
 debug('「　ログインページ');
 debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
-debugLogStar();
+debugLogStart();
 
 // ログイン認証
 require('auth.php');
@@ -46,7 +46,7 @@ if(!empty($_POST)){
 			// DBへ接続
 			$dbh = dbConnect();
 			// SQL文作成 Emailを条件として、usersテーブルからpasswordとidを取得
-			$sql = 'SELECT password,id FROM users WHERE email = :email';
+			$sql = 'SELECT password,user_id FROM users WHERE email = :email';
 			$data = array(':email' => $email);
 			// クエリ実行
 			$stmt = queryPost($dbh, $sql, $data);
@@ -74,7 +74,7 @@ if(!empty($_POST)){
 				}
 
 				// ユーザーIDを格納
-				$_SESSION['user_id'] = $result['id'];
+				$_SESSION['user_id'] = $result['user_id'];
 
 				debug('セッション変数の中身:'.print_r($_SESSION,true));
 				debug('マイページへ遷移します。');
@@ -134,19 +134,31 @@ debug('画面表示処理終了
 		<section id="main">
 
 			<div class="form-container">
-				<form action="mypage.html" class="form">
+				<form action="" method="post" class="form">
 					<h2 class="title">ログイン</h2>
 					<div class="area-msg">
-						メールアドレスまたはパスワードが違います。
+					<?php 
+						if(!empty($err_msg['common'])) echo $err_msg['common'];
+					?>
 					</div>
-					<label>
+					<label class="<?php if(!empty($err_msg['email'])) echo 'err'; ?>">
 						メールアドレス
-						<input type="text" name="email">
+						<input type="text" name="email" value="<?php if(!empty($_POST['email'])) echo $_POST['email']; ?>">
 					</label>
-					<label>
+					<div class="area-msg">
+					<?php 
+						if(!empty($err_msg['email'])) echo $err_msg['email'];
+					?>
+					</div>
+					<label class=<?php if(!empty($err_msg['pass'])) echo 'err'; ?>>
 						パスワード
-						<input type="text" name="pass">
+						<input type="text" name="pass" value="<?php if(!empty($_POST['pass'])) echo $_POST['pass']; ?>">
 					</label>
+					<div class="area-msg">
+					<?php 
+						if(!empty($err_msg['pass'])) echo $err_msg['pass'];
+					?>
+					</div>
 					<label>
 						<input type="checkbox" name="pass_save">
 						次回ログインを省略する
