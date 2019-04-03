@@ -78,7 +78,7 @@ if(!empty($_POST)){
 
 				debug('セッション変数の中身:'.print_r($_SESSION,true));
 				debug('マイページへ遷移します。');
-				header("Location:mypage.html");
+				header("Location:mypage.php");
 			}else{
 				debug('パスワードがアンマッチです。');
 				$err_msg['common'] = MSG09;
@@ -102,30 +102,17 @@ debug('画面表示処理終了
 	以下画面表示
 	========================================
 -->
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-	<meta charset="UTF-8">
-	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-	<!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
-	<title>ログイン | SHARE-LIST</title>
-	<link rel="stylesheet" href="style.css">
-	<link rel="stylesheet" href="'http://fonts.googleapis.com/css?family=Montserrat:400,700'">
-</head>
+<?php 
+$siteTitle = 'ログイン';
+require('head.php');
+?>
+
 <body class="page-login page-1colum">
 
 	<!-- メニュー -->
-	<header>
-		<div class="site-width">
-			<h1><a href="index.html">SHARE-LIST</a></h1>
-			<nav id="top-nav">
-				<ul>
-					<li><a href="signup.html" class="btn btn-primary">ユーザー登録</a></li>
-					<li><a href="login.html">ログイン</a></li>
-				</ul>
-			</nav>
-		</div>
-	</header>
+	<?php
+	require('header.php');
+	?>
 
 	<!-- メインコンテンツ -->
 	<div id="contents" class="site-width">

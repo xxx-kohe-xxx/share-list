@@ -16,17 +16,9 @@
 <body class="page-mypage page-2colum page-logined">
 
 	<!-- メニュー -->
-	<header>
-		<div class="site-width">
-			<h1><a href="index.html">SHARE-LIST</a></h1>
-			<nav id="top-nav">
-				<ul>
-					<li><a href="mypage.html">マイページ</a></li>
-					<li><a href="">ログアウト</a></li>
-				</ul>
-			</nav>
-		</div>
-	</header>
+<?php
+require('header.php');
+?>
 
 	<!-- メインコンテンツ -->
 	<div id="contents" class="site-width">
@@ -184,11 +176,8 @@
 	</div>
 
 	<!-- フッター -->
-	<footer>
-		Copyright
-		<a href="">SHARE-LIST</a>
-		. All Rights Reserved.
-	</footer>
-
+<?php
+require('footer.php');
+?>
 </body>
 </html>
