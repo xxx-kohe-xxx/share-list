@@ -19,11 +19,17 @@
       debug('ログイン有効期限以内です。');
       // 最終ログイン日時を現在日時に更新
       $_SESSION['login_date'] = time();
-      debug('マイページへ遷移します。');
-      // マイページへ遷移
-      header("Location:mypage.html");
+
+      if(basename($_SERVER['PHP_SELF']) === 'login.php'){
+        debug('マイページへ遷移します。');
+        // マイページへ遷移
+        header("Location:mypage.html");
+      }
     }
     
   }else{
     debug('未ログインユーザーです。');
+    if(basename($_SERVER['PHP_SELF']) !== 'login.php' ){
+      header("Location:login.php");
+    }
   }
