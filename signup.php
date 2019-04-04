@@ -1,5 +1,5 @@
 <?php
-
+//共通変数・関数ファイル読み込み
 require('function.php');
 
 //POST送信されているか確認
@@ -55,9 +55,23 @@ if(!empty($_POST)){
 						':create_date' => date('Y-m-d H:i:s')
 					);
 					// クエリ実行
-					queryPost($dbh, $sql, $data);
-					// マイページへ遷移
-					header("Location:mypage.html");
+					$stmt = queryPost($dbh, $sql, $data);
+
+					// クエリ成功の場合
+					if($stmt){
+						$sesLimit = 60*60;
+						// 最終ログイン日時に現在日時を設定
+						$_SESSION['login_date'] = time();
+						$_SESSION['login_limit'] = $sesLimit;
+						// ユーザーIDを格納
+						$_SESSION['user_id'] = $dbh->lastInsertId();
+
+						debug('セッション変数の中身:'.print_r($_SESSION,true));
+						
+						// マイページへ遷移
+						header("Location:mypage.html");
+					}
+
 				} catch (Exception $e) {
 					error_log('エラー発生:' . $e->getMessage());
 					$err_msg['common'] = MSG07;
@@ -69,30 +83,17 @@ if(!empty($_POST)){
 	
  ?>
 
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-	<meta charset="UTF-8">
-	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-	<!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
-	<title>ユーザー登録 | SHARE-LIST</title>
-	<link rel="stylesheet" href="style.css">
-	<link rel="stylesheet" href="'http://fonts.googleapis.com/css?family=Montserrat:400,700'">
-</head>
+<?php
+$siteTitle = 'ユーザー登録';
+require('head.php');
+?>
+
 <body class="page-signup page-1colum">
 
 	<!-- メニュー -->
-	<header>
-		<div class="site-width">
-			<h1><a href="index.html">SHARE-LIST</a></h1>
-			<nav id="top-nav">
-				<ul>
-					<li><a href="signup.php" class="btn btn-primary">ユーザー登録</a></li>
-					<li><a href="login.php">ログイン</a></li>
-				</ul>
-			</nav>
-		</div>
-	</header>
+	<?php
+	require('header.php');
+	?>
 
 	<!-- メインコンテンツ -->
 	<div id="contents" class="site-width">
@@ -142,11 +143,9 @@ if(!empty($_POST)){
 
 	</div>
 
-	<footer>
-		Copyright
-		<a href="">SHARE-LIST</a>
-		. All Rights Reserved.
-	</footer>
+	<?php
+	require('footer.php');
+	?>
 
 </body>
 </html>
