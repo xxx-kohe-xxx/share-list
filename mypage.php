@@ -1,18 +1,21 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-	<meta charset="UTF-8">
-	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-	<!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
-	<title>マイページ | SHARE-LIST</title>
-	<link rel="stylesheet" href="style.css">
-	<link rel="stylesheet" href="'http://fonts.googleapis.com/css?family=Montserrat:400,700'">
-	<style>
-		#main {
-			border: none;
-		}
-	</style>
-</head>
+<?php
+// 共通変数・関数ファイル読み込み
+require('function.php');
+
+debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
+debug('「　マイページ');
+debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
+debugLogStart();
+
+// ログイン認証
+require('auth.php');
+
+?>
+<?php
+$siteTitle = 'マイページ';
+require('head.php');
+?>
+
 <body class="page-mypage page-2colum page-logined">
 
 	<!-- メニュー -->
@@ -176,8 +179,10 @@ require('header.php');
 	</div>
 
 	<!-- フッター -->
+
 <?php
 require('footer.php');
 ?>
+
 </body>
 </html>

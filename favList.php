@@ -1,32 +1,15 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-	<meta charset="UTF-8">
-	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-	<!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
-	<title>マイページ | SHARE-LIST</title>
-	<link rel="stylesheet" href="style.css">
-	<link rel="stylesheet" href="'http://fonts.googleapis.com/css?family=Montserrat:400,700'">
-	<style>
-		#main {
-			border: none;
-		}
-	</style>
+<?php
+$siteTitle = 'お気に入り一覧';
+require('head.php');
+?>
+
 </head>
 <body class="page-mypage page-2colum page-logined">
 
 	<!-- メニュー -->
-	<header>
-		<div class="site-width">
-			<h1><a href="index.html">SHARE-LIST</a></h1>
-			<nav id="top-nav">
-				<ul>
-					<li><a href="mypage.html">マイページ</a></li>
-					<li><a href="">ログアウト</a></li>
-				</ul>
-			</nav>
-		</div>
-	</header>
+	<?php
+require('header.php');
+?>
 
 	<!-- メインコンテンツ -->
 	<div id="contents" class="site-width">
@@ -245,11 +228,9 @@
 	</div>
 
 	<!-- フッター -->
-	<footer>
-		Copyright
-		<a href="">SHARE-LIST</a>
-		. All Rights Reserved.
-	</footer>
+	<?php
+	require('footer.php');
+	?>
 
 </body>
 </html>

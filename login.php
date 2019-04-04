@@ -159,11 +159,9 @@ require('head.php');
 
 	</div>
 
-	<footer>
-		Copyright
-		<a href="">SHARE-LIST</a>
-		. All Rights Reserved.
-	</footer>
+<?php
+require('footer.php');
+?>
 
 </body>
 </html>

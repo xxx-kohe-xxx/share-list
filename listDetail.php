@@ -1,30 +1,14 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-	<meta charset="UTF-8">
-	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-	<!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
-	<title>リスト詳細 | SHARE-LIST</title>
-	<link rel="stylesheet" href="style.css">
-	<link rel="stylesheet" href="'http://fonts.googleapis.com/css?family=Montserrat:400,700'">
-	<style>
+<?php
+$siteTitle = 'リスト詳細';
+require('head.php');
+?>
 
-	</style>
-</head>
 <body class="page-listDetail page-2colum page-logined">
 
 	<!-- メニュー -->
-	<header>
-		<div class="site-width">
-			<h1><a href="index.html">SHARE-LIST</a></h1>
-			<nav id="top-nav">
-				<ul>
-					<li><a href="signup.html" class="btn btn-primary">ユーザー登録</a></li>
-					<li><a href="login.html">ログイン</a></li>
-				</ul>
-			</nav>
-		</div>
-	</header>
+<?php
+require('header.php');
+?>
 
 	<!-- メインコンテンツ -->
 	<div id="contents" class="site-width">
@@ -96,11 +80,9 @@
 
 	</div>
 
-	<footer>
-		Copyright
-		<a href="">SHARE-LIST</a>
-		. All Rights Reserved.
-	</footer>
+<?php
+require('footer.php');
+?>
 
 </body>
 </html>
