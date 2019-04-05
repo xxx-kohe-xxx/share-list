@@ -23,7 +23,7 @@
       if(basename($_SERVER['PHP_SELF']) === 'login.php'){
         debug('マイページへ遷移します。');
         // マイページへ遷移
-        header("Location:mypage.html");
+        header("Location:mypage.php");
       }
     }
     

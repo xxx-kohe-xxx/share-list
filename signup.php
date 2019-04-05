@@ -69,7 +69,7 @@ if(!empty($_POST)){
 						debug('セッション変数の中身:'.print_r($_SESSION,true));
 						
 						// マイページへ遷移
-						header("Location:mypage.html");
+						header("Location:mypage.php");
 					}
 
 				} catch (Exception $e) {
@@ -141,8 +141,10 @@ require('head.php');
 				</form>
 			</div>
 
+		</section>
+		
 	</div>
-
+	<!-- フッター -->
 	<?php
 	require('footer.php');
 	?>
