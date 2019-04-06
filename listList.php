@@ -205,14 +205,9 @@ require('header.php');
 		</section>
 
 		<!-- サイドバー -->
-		<section id="sidebar">
-			<img src="img/ch_thumb_cuddles.gif" alt="プロフィール画像">
-			<a href="">リストを投稿する</a>
-			<a href="">リスト一覧を見る</a>
-			<a href="">プロフィール編集</a>
-			<a href="">パスワード変更</a>
-			<a href="">退会</a>
-		</section>
+		<?php
+		require('sidebar_mypage.php');
+		?>
 	</div>
 
 	<!-- フッター -->
