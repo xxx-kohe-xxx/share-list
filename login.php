@@ -46,7 +46,7 @@ if(!empty($_POST)){
 			// DBへ接続
 			$dbh = dbConnect();
 			// SQL文作成 Emailを条件として、usersテーブルからpasswordとidを取得
-			$sql = 'SELECT password,user_id FROM users WHERE email = :email';
+			$sql = 'SELECT password,user_id FROM users WHERE email = :email AND del_flg = 0';
 			$data = array(':email' => $email);
 			// クエリ実行
 			$stmt = queryPost($dbh, $sql, $data);
@@ -139,7 +139,7 @@ require('head.php');
 					</div>
 					<label class=<?php if(!empty($err_msg['pass'])) echo 'err'; ?>>
 						パスワード
-						<input type="text" name="pass" value="<?php if(!empty($_POST['pass'])) echo $_POST['pass']; ?>">
+						<input type="password" name="pass" value="">
 					</label>
 					<div class="area-msg">
 					<?php 

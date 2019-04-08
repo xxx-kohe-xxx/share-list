@@ -80,12 +80,14 @@ define('MSG08','そのEmailはすでに登録されています');
 define('MSG09', 'メールアドレスまたはパスワードが違います');
 
 // ========================================
-// バリデーションチェック関数
+// グローバル変数
 // ========================================
-
 //エラーメッセージ格納用の配列
 $err_msg = array(); //define~~で定義した定数を格納するのに使う
 
+// ========================================
+// バリデーションチェック関数
+// ========================================
 // バリデーション関数(未入力チェック)
 function validRequired($str, $key){
 	if(empty($str)){
@@ -109,7 +111,7 @@ function validEmailDup($email){
 		// DBへ接続
 		$dbh = dbConnect();
 		// SQL文作成
-		$sql = 'SELECT count(*) FROM users WHERE email = :email';
+		$sql = 'SELECT count(*) FROM users WHERE email = :email AND del_flg = 0';
 		$data = array(':email' => $email);
 		// クエリ実行
 		$stmt = queryPost($dbh, $sql, $data);
@@ -157,6 +159,10 @@ function validHalf($str, $key){
 	}
 }
 
+// ========================================
+// データベース
+// ========================================
+
 // DB接続関数
 function dbConnect(){
 	// DBへの接続準備
@@ -186,4 +192,57 @@ function queryPost($dbh, $sql, $data){
 	return $stmt;
 }
 
+// ユーザーデータ取得関数
+function getUser($u_id){
+	debug('ユーザー情報を取得します。');
+	// 例外処理
+	try {
+		// DBへ接続
+		$dbh = dbConnect();
+		// SQL文作成
+		$sql = 'SELECT * FROM users WHERE user_id = :u_id';
+		$data = array(':u_id' => $u_id);
+		// クエリ実行
+		$stmt = queryPost($dbh, $sql, $data);
+
+		if($stmt){
+			debug('クエリ成功');
+		}else{
+			debug('クエリに失敗しました。');
+		}
+	} catch(Exception $e){
+		error_log('エラー発生:'.$e->getMessage());
+	}
+	return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+// フォーム入力保持
+function getFormData($str){
+	global $dbFormData;
+	// ユーザーデータがある場合
+	if(!empty($dbFormData)){
+		// フォームのエラーがある場合
+		if(!empty($err_msg[$str])){
+			// POSTにデータがある場合
+			if(isset($_POST[$str])){
+				return $_POST[$str];
+			}else{
+				// ない場合(フォームにエラーがある=POSTされているはずなのでまずありえない)はDBの情報を表示
+				return $dbFormData[$str];
+			}
+		}else{
+			// POSTにデータがあり、DBの情報と違う場合(このフォームも変更していてエラーはないが、ほかのフォームで引っかかっている状態)
+			if(isset($_POST[$str]) && $_POST[$str] !== $dbFormData[$str]){
+				return $_POST[$str];
+			}else{
+				// 変更なし
+				return $dbFormData[$str];
+			}
+		}
+	}else{
+		if(isset($_POST[$str])){
+			return $_POST[$str];
+		}
+	}
+}
 ?>
