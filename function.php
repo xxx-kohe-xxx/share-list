@@ -52,32 +52,19 @@ function debugLogStart(){
 // ========================================
 //エラーメッセージを定数に設定
 
-//入力項目が空欄のとき
-define('MSG01','入力必須です');
-
-//Emailの正規表現と異なるとき
-define('MSG02','Emailの形式で入力してください');
-
-//passとpass_reが一致しないとき
-define('MSG03','パスワード(再入力)が合っていません'); 
-
-//英数字以外が入力されたとき
-define('MSG04','英数字のみご利用いただけます'); 
-
-//6文字以下のとき
-define('MSG05','6文字以上で入力してください'); 
-
-//255文字以上入力されたとき
-define('MSG06','255文字以内で入力してください'); 
-
-//例外的なエラーが発生したとき。サーバーが止まった時とか？
-define('MSG07','エラーが発生しました。しばらくたってからやり直してください');
-
-//Emailが重複で登録されたとき
-define('MSG08','そのEmailはすでに登録されています'); 
-
-// パスワードが一致しないとき
-define('MSG09', 'メールアドレスまたはパスワードが違います');
+define('MSG01','入力必須です');//入力項目が空欄のとき
+define('MSG02','Emailの形式で入力してください');//Emailの正規表現と異なるとき
+define('MSG03','パスワード(再入力)が合っていません'); //passとpass_reが一致しないとき
+define('MSG04','英数字のみご利用いただけます'); //英数字以外が入力されたとき
+define('MSG05','6文字以上で入力してください'); //6文字以下のとき
+define('MSG06','255文字以内で入力してください'); //255文字以上入力されたとき
+define('MSG07','エラーが発生しました。しばらくたってからやり直してください');//例外的なエラーが発生したとき。サーバーが止まった時とか？
+define('MSG08','そのEmailはすでに登録されています'); //Emailが重複で登録されたとき
+define('MSG09','メールアドレスまたはパスワードが違います');// パスワードが一致しないとき
+define('MSG10','古いパスワードが違います'); //パスワードが一致しないとき
+define('MSG11','古いパスワードと同じです'); //パスワードが古いパスと一致したとき
+define('SUC01','パスワードを変更しました');
+define('SUC02','プロフィールを変更しました');
 
 // ========================================
 // グローバル変数
@@ -159,6 +146,24 @@ function validHalf($str, $key){
 	}
 }
 
+// パスワードチェック関数
+function validPass($str, $key){
+	// 半角英数字チェック
+	validHalf($str, $key);
+	// 最大文字数チェック
+	validMaxLen($str, $key);
+	// 最小文字数チェック
+	validMinLen($str, $key);
+}
+// エラーメッセージ表示
+function getErrMsg($key){
+	global $err_msg;
+	if(!empty($err_msg[$key])){
+		return $err_msg[$key];
+	}
+}
+
+
 // ========================================
 // データベース
 // ========================================
@@ -213,9 +218,35 @@ function getUser($u_id){
 	} catch(Exception $e){
 		error_log('エラー発生:'.$e->getMessage());
 	}
+	// クエリデータを返す
 	return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
+// ========================================
+// メール送信
+// ========================================
+function sendMail($from, $to, $subject, $comment){
+	if(!empty($to) && !empty($subject) && !empty($comment)){
+		// 文字化けしないように設定(お決まりパターン)
+		mb_language("japanese"); // 現在使っている言語の設定
+		mb_internal_encoding("UTF-8"); // 内部の日本語をどうエンコーディングするかを設定
+
+		// メールを送信(結果がTRUEかFALSEで返ってくる)
+		$result = mb_send_mail($to, $subject, $comment, "from:".$from);
+		// 送信結果を判定
+		if($result){
+			debug('メール送信しました');
+		}else{
+			debug('【エラー発生】メール送信に失敗しました。');
+		}
+	}
+}
+
+
+
+// ========================================
+// その他
+// ========================================
 // フォーム入力保持
 function getFormData($str){
 	global $dbFormData;
@@ -243,6 +274,14 @@ function getFormData($str){
 		if(isset($_POST[$str])){
 			return $_POST[$str];
 		}
+	}
+}
+// セッションを一回だけ取得できる
+function getSessionFlash($key){
+	if(!empty($_SESSION[$key])){
+		$data = $_SESSION[$key];
+		$_SESSION[$key] = '';
+		return $data;
 	}
 }
 ?>
