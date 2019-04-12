@@ -1,4 +1,107 @@
 <?php
+// 共通変数・関数の読み込み
+require('function.php');
+
+debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
+debug('「　パスワード変更ページ');
+debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
+debugLogStart();
+
+// ログイン認証
+require('auth.php');
+
+// ========================================
+// 画面処理
+// ========================================
+// DBからユーザーデータを取得
+$userData = getUser($_SESSION['user_id']);
+debug('取得したユーザー情報:'.print_r($userData, true));
+
+// ポスト送信されていた場合
+if(!empty($_POST)){
+	debug('POST送信があります。');
+	debug('POST情報:'.print_r($_POST, true));
+
+	// 変数にユーザー情報を代入
+	$pass_old = $_POST['pass_old'];
+	$pass_new = $_POST['pass_new'];
+	$pass_new_re = $_POST['pass_new_re'];
+
+	validRequired($pass_old, 'pass_old');
+	validRequired($pass_new, 'pass_new');
+	validRequired($pass_new_re, 'pass_new_re');
+
+	if(empty($err_msg)){
+		debug('未入力チェックOK');
+
+		// 古いパスワードのチェック
+		validPass($pass_old, 'pass_old');
+		// 新しいパスワードのチェック
+		validPass($pass_new, 'pass_new');
+
+		// 古いパスワードとDBのパスワードを照合
+		if(!password_verify($pass_old,$userData['password'])){
+		// if($pass_old !== $userData['password']){
+			$err_msg['pass_old'] = MSG10;
+		}
+		debug(print_r($err_msg,true));
+		// 新しいパスワードと古いパスワードが同じかチェック
+		if($pass_old === $pass_new){
+			$err_msg['pass_new'] = MSG11;
+		}
+		validMatch($pass_new, $pass_new_re ,'pass_new_re');
+
+		if(empty($err_msg)){
+			debug('バリデーションOK');
+
+			// 例外処理
+			try {
+				// DBと接続
+				$dbh = dbconnect();
+				// SQL文作成
+				$sql = 'UPDATE users SET password = :pass WHERE user_id = :id';
+				$data = array(':id' => $_SESSION['user_id'], ':pass' => password_hash($pass_new, PASSWORD_DEFAULT));
+				// クエリ実行
+				$stmt = queryPost($dbh, $sql, $data);
+
+				if($stmt){
+					debug('クエリ成功');
+					$_SESSION['msg_success'] = SUC01;
+
+					// メール送信
+					$username = ($userData['username']) ? $userData['username'] : '名無し';
+					$from = 'okurimoto@webukatu.com';
+					$to = $userData['email'];
+					$subject = 'パスワード変更通知 | SHARE-LIST';
+					$comment = <<<EOT
+{$username}さん
+パスワードが変更されました。
+
+===============================
+SHARE-LIST 運営
+URL https://share-list
+E-mail okurimoto@webukatu.com
+===============================
+EOT;
+					sendMail($from, $to, $subject, $comment);
+					header('Location:mypage.php');
+				}else{
+					debug('クエリに失敗しました。');
+					$err_msg['common'] = MSG07;
+				}
+			} catch(Exception $e){
+				error_log('エラー発生:'.$e->getMessage());
+				$err_msg['common'] = MSG07;
+			}
+		}
+	}
+}else{
+	debug('POST送信がありません。');
+}
+
+?>
+
+<?php
 $siteTitle = 'パスワード変更';
 require('head.php');
 ?>
@@ -17,25 +120,39 @@ require('head.php');
 		<!-- メイン -->
 		<section class="" id="main">
 			<div class="form-container">
-				<form action="" class="form">
+				<form action="" method="post" class="form">
 					<div class="area-msg">
-						古いパスワードが正しくありません<br>
-						新しいパスワードと新しいパスワード（再入力が一致しません。<br>
-						新しいパスワードは半角英数字6文字以上で入力してください。<br>
-						パスワードが長すぎます。
+						<?php
+							echo getErrMsg('common');
+						?>
 					</div>
-					<label>
+					<label class="<?php if(!empty($err_msg['pass_old'])) echo 'err'; ?>">
 						古いパスワード
-						<input type="text" name="pass_old">
+						<input type="password" name="pass_old" value="<?php echo getFormData('pass_old'); ?>">
 					</label>
-					<label>
+					<div class="area-msg">
+						<?php
+							echo getErrMsg('pass_old');
+						?>
+					</div>
+					<label class="<?php if(!empty($err_msg['pass_new'])) echo 'err'; ?>">
 						新しいパスワード
-						<input type="text" name="pass_new" id="">
+						<input type="password" name="pass_new" value="<?php echo getFormData('pass_new'); ?>">
 					</label>
-					<label>
+					<div class="area-msg">
+						<?php
+							echo getErrMsg('pass_new');
+						?>
+					</div>
+					<label class="<?php if(!empty($err_msg['pass_new_re'])) echo 'err'; ?>">
 						新しいパスワード(再入力)
-						<input type="text" name="pass_new_re" id="">
+						<input type="password" name="pass_new_re" value="<?php echo getFormData('pass_new_re'); ?>">
 					</label>
+					<div class="area-msg">
+						<?php
+							echo getErrMsg('pass_new_re');
+						?>
+					</div>
 					<div class="btn-container">
 						<input type="submit" class="btn btn-mid" value="変更する">
 					</div>
