@@ -4,7 +4,7 @@
 			<nav id="top-nav">
 				<ul>
           <?php 
-          if(!empty($_SERVER['user_id'])){
+          if(empty($_SESSION['user_id'])){
           ?>
             <li><a href="signup.php" class="btn btn-primary">ユーザー登録</a></li>
             <li><a href="login.php">ログイン</a></li>
