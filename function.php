@@ -65,6 +65,7 @@ define('MSG10','古いパスワードが違います'); //パスワードが一�
 define('MSG11','古いパスワードと同じです'); //パスワードが古いパスと一致したとき
 define('SUC01','パスワードを変更しました');
 define('SUC02','プロフィールを変更しました');
+define('SUC03','メールを送信しました');
 
 // ========================================
 // グローバル変数
@@ -205,7 +206,7 @@ function getUser($u_id){
 		// DBへ接続
 		$dbh = dbConnect();
 		// SQL文作成
-		$sql = 'SELECT * FROM users WHERE user_id = :u_id';
+		$sql = 'SELECT * FROM users WHERE user_id = :u_id AND del_flg = 0';
 		$data = array(':u_id' => $u_id);
 		// クエリ実行
 		$stmt = queryPost($dbh, $sql, $data);
@@ -283,5 +284,14 @@ function getSessionFlash($key){
 		$_SESSION[$key] = '';
 		return $data;
 	}
+}
+// // 認証キー生成関数
+function makeRandKey($length = 8){
+	static $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJLKMNOPQRSTUVWXYZ0123456789';
+	$str = '';
+	for ($i = 0; $i < $length; ++$i){
+		$str .= $chars[mt_rand(0,61)];
+	}
+	return $str;
 }
 ?>
