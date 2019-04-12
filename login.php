@@ -56,6 +56,7 @@ if(!empty($_POST)){
 			debug('クエリ結果の中身:'.print_r($result,true));
 
 			if(!empty($result) && password_verify($pass, array_shift($result))){
+			// if(!empty($result) && $pass === array_shift($result)){
 				debug('パスワードがマッチしました。');
 
 				// ログイン有効期限(デフォルトを1時間とする)
@@ -113,6 +114,9 @@ require('head.php');
 	<?php
 	require('header.php');
 	?>
+	<p id="js-show-msg" style="display: none;" class="msg-slide">
+		<?php echo getSessionFlash('msg_success'); ?>
+	</p>
 
 	<!-- メインコンテンツ -->
 	<div id="contents" class="site-width">
@@ -153,7 +157,7 @@ require('head.php');
 					<div class="btn-container">
 						<input type="submit" class="btn btn-mid" value="ログイン">	
 					</div>
-					パスワードを忘れた方は<a href="passRemindSend.html">こちら</a>
+					パスワードを忘れた方は<a href="passRemindSend.php">こちら</a>
 				</form>
 			</div>
 
