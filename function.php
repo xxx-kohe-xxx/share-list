@@ -61,8 +61,11 @@ define('MSG06','255文字以内で入力してください'); //255文字以上�
 define('MSG07','エラーが発生しました。しばらくたってからやり直してください');//例外的なエラーが発生したとき。サーバーが止まった時とか？
 define('MSG08','そのEmailはすでに登録されています'); //Emailが重複で登録されたとき
 define('MSG09','メールアドレスまたはパスワードが違います');// パスワードが一致しないとき
-define('MSG10','古いパスワードが違います'); //パスワードが一致しないとき
-define('MSG11','古いパスワードと同じです'); //パスワードが古いパスと一致したとき
+define('MSG10','古いパスワードが違います'); // パスワードが一致しないとき
+define('MSG11','古いパスワードと同じです'); // パスワードが古いパスと一致したとき
+define('MSG12','文字で入力してください'); // 固定長長さ以外で入力したとき
+define('MSG13','認証キーが間違っています'); // 認証キーが一致しないとき
+define('MSG14','有効期限が切れています'); // 有効期限切れ
 define('SUC01','パスワードを変更しました');
 define('SUC02','プロフィールを変更しました');
 define('SUC03','メールを送信しました');
@@ -144,6 +147,18 @@ function validHalf($str, $key){
 	if(!preg_match("/^[a-zA-Z0-9]+$/", $str)){
 		global $err_msg;
 		$err_msg[$key] = MSG04;
+	}else{
+		debug('半角チェックOK');
+	}
+}
+
+// 固定長チェック
+function validLength($str, $key, $len = 8){
+	if(mb_strlen($str) !== $len){
+		global $err_msg;
+		$err_msg[$key] = $len.MSG12;
+	}else{
+		debug('固定長チェックOK');
 	}
 }
 
@@ -156,6 +171,7 @@ function validPass($str, $key){
 	// 最小文字数チェック
 	validMinLen($str, $key);
 }
+
 // エラーメッセージ表示
 function getErrMsg($key){
 	global $err_msg;
@@ -163,6 +179,7 @@ function getErrMsg($key){
 		return $err_msg[$key];
 	}
 }
+
 
 
 // ========================================
@@ -285,7 +302,7 @@ function getSessionFlash($key){
 		return $data;
 	}
 }
-// // 認証キー生成関数
+// ランダム文字(8文字)生成関数
 function makeRandKey($length = 8){
 	static $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJLKMNOPQRSTUVWXYZ0123456789';
 	$str = '';
