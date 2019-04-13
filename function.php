@@ -84,6 +84,8 @@ function validRequired($str, $key){
 	if(empty($str)){
 		global $err_msg; //関数外の変数を使うという宣言
 		$err_msg[$key] = MSG01;
+	}else{
+		debug('未入力チェックOK');
 	}
 }
 
@@ -92,6 +94,8 @@ function validEmail($str,$key){
 	if(!preg_match("/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/",$str)){
 		global $err_msg;
 		$err_msg[$key] = MSG02;
+	}else{
+		debug('Email形式チェックOK');
 	}
 }
 
@@ -131,6 +135,8 @@ function validMinLen($str, $key, $min = 6){
 	if(mb_strlen($str) < $min){
 		global $err_msg;
 		$err_msg[$key] = MSG05;
+	}else{
+		debug('最小文字数チェックOK');
 	}
 }
 
@@ -139,6 +145,8 @@ function validMaxLen($str, $key, $max = 255){
 	if(mb_strlen($str) > $max){
 		global $err_msg;
 		$err_msg[$key] = MSG06;
+	}else{
+		debug('最大文字数チェックOK');
 	}
 }
 
@@ -164,12 +172,16 @@ function validLength($str, $key, $len = 8){
 
 // パスワードチェック関数
 function validPass($str, $key){
+	global $err_msg;
 	// 半角英数字チェック
 	validHalf($str, $key);
 	// 最大文字数チェック
 	validMaxLen($str, $key);
 	// 最小文字数チェック
 	validMinLen($str, $key);
+	if(empty($err_msg)){
+		debug('パスワードチェックOK');
+	}
 }
 
 // エラーメッセージ表示
