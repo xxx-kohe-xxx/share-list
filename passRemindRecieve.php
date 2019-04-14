@@ -65,7 +65,7 @@ if(!empty($_POST)){
 
 					// クエリ成功の場合
 					if($stmt){
-						debug('クエリ成功。');
+						// debug('クエリ成功。');
 
 						// 	メール送信
 						$from = 'info@webukatu.com';
@@ -94,9 +94,9 @@ EOT;
 						debug('セッション変数の中身:'.print_r($_SESSION,true));
 						// 	ログインページへ遷移
 						header("Location:login.php");
-					}else{
-						debug('クエリが失敗しました。');
-						$err_msg['common'] = MSG07;
+					// }else{
+					// 	debug('クエリが失敗しました。');
+					// 	$err_msg['common'] = MSG07;
 					}
 				} catch (Exception $e){
 					error_log('エラー発生:'.$e->getMessage());

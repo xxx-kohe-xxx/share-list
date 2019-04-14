@@ -50,7 +50,7 @@ function debugLogStart(){
 // ========================================
 // 定数
 // ========================================
-//エラーメッセージを定数に設定
+//メッセージを定数に設定
 
 define('MSG01','入力必須です');//入力項目が空欄のとき
 define('MSG02','Emailの形式で入力してください');//Emailの正規表現と異なるとき
@@ -66,9 +66,12 @@ define('MSG11','古いパスワードと同じです'); // パスワードが古
 define('MSG12','文字で入力してください'); // 固定長長さ以外で入力したとき
 define('MSG13','認証キーが間違っています'); // 認証キーが一致しないとき
 define('MSG14','有効期限が切れています'); // 有効期限切れ
+define('MSG15','半角数字のみご利用できます');
 define('SUC01','パスワードを変更しました');
 define('SUC02','プロフィールを変更しました');
 define('SUC03','メールを送信しました');
+define('SUC04','登録しました');
+
 
 // ========================================
 // グローバル変数
@@ -81,7 +84,7 @@ $err_msg = array(); //define~~で定義した定数を格納するのに使う
 // ========================================
 // バリデーション関数(未入力チェック)
 function validRequired($str, $key){
-	if(empty($str)){
+	if($srt === ''){
 		global $err_msg; //関数外の変数を使うという宣言
 		$err_msg[$key] = MSG01;
 	}else{
@@ -183,6 +186,10 @@ function validPass($str, $key){
 		debug('パスワードチェックOK');
 	}
 }
+// selectboxチェック
+function validSelect($str, $key){
+
+}
 
 // エラーメッセージ表示
 function getErrMsg($key){
@@ -223,7 +230,12 @@ function queryPost($dbh, $sql, $data){
 	// クエリ作成
 	$stmt = $dbh->prepare($sql);
 	// プレースホルダに値をセットし、SQL文を実行
-	$stmt->execute($data);
+	if(!$stmt->execute($data)){
+		debug('クエリに失敗しました。');
+		$err_msg['common'] = MSG07;
+		return 0;
+	}
+	debug('クエリ成功。');
 	return $stmt;
 }
 
@@ -241,15 +253,15 @@ function getUser($u_id){
 		$stmt = queryPost($dbh, $sql, $data);
 
 		if($stmt){
-			debug('クエリ成功');
+			return $stmt->fetch(PDO::FETCH_ASSOC);
 		}else{
-			debug('クエリに失敗しました。');
+			return false;
 		}
 	} catch(Exception $e){
 		error_log('エラー発生:'.$e->getMessage());
 	}
 	// クエリデータを返す
-	return $stmt->fetch(PDO::FETCH_ASSOC);
+	// return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 // ========================================

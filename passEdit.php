@@ -65,7 +65,6 @@ if(!empty($_POST)){
 				$stmt = queryPost($dbh, $sql, $data);
 
 				if($stmt){
-					debug('クエリ成功');
 					$_SESSION['msg_success'] = SUC01;
 
 					// メール送信
@@ -85,9 +84,6 @@ E-mail okurimoto@webukatu.com
 EOT;
 					sendMail($from, $to, $subject, $comment);
 					header('Location:mypage.php');
-				}else{
-					debug('クエリに失敗しました。');
-					$err_msg['common'] = MSG07;
 				}
 			} catch(Exception $e){
 				error_log('エラー発生:'.$e->getMessage());

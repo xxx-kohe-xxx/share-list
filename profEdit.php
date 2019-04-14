@@ -64,12 +64,8 @@ if(!empty($_POST)){
 			
 			// クエリ成功の場合
 			if($stmt){
-				debug('クエリ成功');
 				debug('マイページへ遷移します。');
 				header('Location:mypage.php');
-			}else{
-				debug('クエリに失敗しました。');
-				$err_msg['common'] = MSG08;
 			}
 		} catch(Exception $e){
 			error_log('エラー発生:'.$e->getMessage());

@@ -38,9 +38,9 @@ if(!empty($_POST)){
 			debug('セッション変数の中身:'.print_r($_SESSION,true));
 			debug('トップページへ遷移します。');
 			header("Location:index.php");
-		}else{
-			debug('クエリが失敗しました。');
-			$err_msg['common'] = MSG07;
+		// }else{
+		// 	debug('クエリが失敗しました。');
+		// 	$err_msg['common'] = MSG07;
 		}
 	} catch(Exception $e){
 		error_log('エラー発生:'.$e->getMessage());
