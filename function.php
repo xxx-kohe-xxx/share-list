@@ -67,6 +67,7 @@ define('MSG12','文字で入力してください'); // 固定長長さ以外で
 define('MSG13','認証キーが間違っています'); // 認証キーが一致しないとき
 define('MSG14','有効期限が切れています'); // 有効期限切れ
 define('MSG15','半角数字のみご利用できます');
+define('MSG16','正しくありません');
 define('SUC01','パスワードを変更しました');
 define('SUC02','プロフィールを変更しました');
 define('SUC03','メールを送信しました');
@@ -84,7 +85,7 @@ $err_msg = array(); //define~~で定義した定数を格納するのに使う
 // ========================================
 // バリデーション関数(未入力チェック)
 function validRequired($str, $key){
-	if($srt === ''){
+	if($str === ''){
 		global $err_msg; //関数外の変数を使うという宣言
 		$err_msg[$key] = MSG01;
 	}else{
@@ -147,7 +148,7 @@ function validMinLen($str, $key, $min = 6){
 function validMaxLen($str, $key, $max = 255){
 	if(mb_strlen($str) > $max){
 		global $err_msg;
-		$err_msg[$key] = MSG06;
+		$err_msg[$key] = $max.MSG12;
 	}else{
 		debug('最大文字数チェックOK');
 	}
@@ -188,7 +189,10 @@ function validPass($str, $key){
 }
 // selectboxチェック
 function validSelect($str, $key){
-
+	if(!preg_match("/^[0-9]+$/",$str)){
+		global $err_msg;
+		$err_msg[$key] = MSG16;
+	}
 }
 
 // エラーメッセージ表示
@@ -232,6 +236,7 @@ function queryPost($dbh, $sql, $data){
 	// プレースホルダに値をセットし、SQL文を実行
 	if(!$stmt->execute($data)){
 		debug('クエリに失敗しました。');
+		debug('失敗したSQL:'.print_r($stmt,true));
 		$err_msg['common'] = MSG07;
 		return 0;
 	}
@@ -262,6 +267,54 @@ function getUser($u_id){
 	}
 	// クエリデータを返す
 	// return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+function getList($u_id, $l_id){
+	debug('リスト情報を取得します。');
+	debug('ユーザーID:'.$u_id);
+	debug('リストID:'.$l_id);
+	// 例外処理
+	try {
+
+		$dbh = dbConnect();
+		// SQL文作成
+		$sql = 'SELECT * FROM lists WHERE user_id = :u_id AND list_id = :l_id AND del_flg = 0';
+		$data = array(':u_id' => $u_id, ':l_id' => $l_id);
+		// クエリ実行
+		$stmt = queryPost($dbh, $sql, $data);
+		
+		if($stmt){
+			// クエリ結果のデータを1レコード返却
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+		}else{
+			return false;
+		}
+	}	catch(Exception $e){ 
+		error_log('エラー発生:'.$e->getMessage());
+	}
+}
+
+function getCategory(){
+	debug('カテゴリー情報を取得します。');
+	// 例外処理
+	try {
+		// DB接続
+		$dbh = dbConnect();
+		// SQL文作成
+		$sql = 'SELECT * FROM category';
+		$data = array();
+		// クエリ実行
+		$stmt = queryPost($dbh, $sql, $data);
+
+		if($stmt){
+			// クエリの全データを返却
+			return $stmt->fetchAll();
+		}else{
+			return false;
+		}
+	} catch(Exception $e){
+		error_log('エラー発生:'.$e->getMessage());
+	}
 }
 
 // ========================================
