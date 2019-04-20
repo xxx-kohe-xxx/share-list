@@ -1,4 +1,44 @@
 <?php
+// 共通変数・関数の読み込み
+require('function.php');
+
+debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
+debug('「　トップページ');
+debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
+debugLogStart();
+
+// =====================================
+// 画面処理
+// =====================================
+
+// 画面表示用データ取得
+// =====================================
+// 現在のページのGETパラメータを取得
+$currentPageNum = (!empty($_GET['p'])) ? $_GET['p'] : 1 ;// デフォルトは1ページ目
+// パラメータに不正な値が入っているかチェック
+if(!is_int((int)$currentPageNum)){ // $currentPageNumをint型にキャストしてる
+	error_log('エラー発生:指定ページに不正な値が入りました。');
+	header("Location:index.php");
+}
+// 表示件数
+$listSpan = 12;
+// 現在の表示レコード先頭を算出
+$currentMinNum = (($currentPageNum-1)*$listSpan);// ex. 1ページ目 (1-1)*20 = 0、2ページ目 (2-1)*20 = 20
+// DBからリストデータを取得
+$dbListData = getListList($currentMinNum);
+// DBからカテゴリデータを取得
+$dbCategoryData = getCategory();
+debug('現在のページ:'.$currentPageNum);
+// debug('フォーム用DBデータ:'.print_r($dbFormData,true));
+// debug('カテゴリデータ:'.print_r($dbCategoryData,true));
+debug('リストデータ:'.print_r($dbListData,true));
+
+debug('画面表示処理終了 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+
+?>
+
+
+<?php
 $siteTitle = 'TOP';
 require('head.php');
 ?>
@@ -32,20 +72,23 @@ require('header.php');
 		<section id="main">
 			<div class="search-title">
 				<div class="search-left">
-					<span class="total-num">104</span>件のリストが見つかりました
+					<span class="total-num"><?php echo sanitize($dbListData['total']); ?></span>件のリストが見つかりました
 				</div>
 				<div class="search-right">
-					<span class="num">1</span> - <span class="num">20</span>件/ <span class="num">104</span>件中
+					<span class="num"><?php echo $currentMinNum + 1; ?></span> - <span class="num"><?php echo $currentMinNum + $listSpan; ?></span>件/ <span class="num"><?php echo sanitize($dbListData['total']); ?></span>件中
 				</div>
 			</div>
 			<div class="panel-list">
-				<a href="listDetail.html" class="panel">
+				<?php
+					foreach($dbListData['data'] as $key => $val):
+				?>
+				<a href="listDetail.php?l_id=<?php echo $val['list_id']; ?>" class="panel">
 					<div class="panel-head">
-						<p class="panel-title">リスト1</p>
+						<p class="panel-title"><?php echo sanitize($val['listname']); ?></p>
 					</div>
 					<div class="panel-body">
 						<ul>
-							<li>テキストテキスト</li>
+							<li><?php echo sanitize($val['listcontent']); ?></li>
 							<li>テキストテキスト</li>
 							<li>テキストテキスト</li>
 							<li>テキストテキスト</li>
@@ -53,227 +96,57 @@ require('header.php');
 						</ul>
 					</div>
 				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト2</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト3</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト4</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト5</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト6</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト7</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト8</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト9</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト10</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト11</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト12</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト13</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト14</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト15</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト16</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
+				<?php
+					endforeach;
+				?>
 			</div>
 
 			<div class="pagination">
 				<ul class="pagination-list">
-					<li class="list-item"><a href="">&lt;</a></li>
-					<li class="list-item active"><a href="">1</a></li>
-					<li class="list-item "><a href="">2</a></li>
-					<li class="list-item "><a href="">3</a></li>
-					<li class="list-item "><a href="">4</a></li>
-					<li class="list-item "><a href="">5</a></li>
-					<li class="list-item "><a href="">&gt;</a></li>
+					<?php
+						$pageColNum = 5; // ページ項目を何項目だすか?
+						$totalPageNum = $dbListData['total_page'];
+						// 現在のページが総ページ数と同じかつ、総ページ数がページ項目数以上の場合
+						if($currentPageNum == $totalPageNum && $totalPageNum >= $pageColNum){
+							$minPageNum = $currentPageNum - 4;
+							$maxPageNum = $currentPageNum;
+						// 現在のページが総ページ数の1ページ前の場合
+						}elseif($currentPageNum == ($totalPageNum - 1) && $totalPageNum >= $pageColNum){
+							$minPageNum = $currentPageNum - 3;
+							$maxPageNum = $currentPageNum + 1;
+						// 現在のページが2の場合
+						}elseif($currentPageNum == 2 && $totalPageNum >= $pageColNum){
+							$minPageNum = $currentPageNum - 1;
+							$maxPageNum = $currentPageNum + 3;
+						// 現在のページが1の場合
+						}elseif($currentPageNum == 1 && $totalPageNum >= $pageColNum){
+							$minPageNum = $currentPageNum;
+							$maxPageNum = 5;
+						// 総ページ数がページ項目数より少ない場合
+						}elseif($totalPageNum < $pageColNum){
+							$minPageNum = 1;
+							$maxPageNum = $totalPageNum;
+						// それ以外の場合
+						}else{
+							$minPageNum = $currentPageNum - 2;
+							$maxPageNum = $currentPageNum + 2;
+						}
+					?>
+					<?php if($currentPageNum != 1): ?>
+						<li class="list-item"><a href="?p=1">&lt;</a></li>
+					<?php endif; ?>
+					<?php
+						for($i = $minPageNum; $i <= $maxPageNum; $i++):
+					?>
+					<li class="list-item <?php if($currentPageNum == $i) echo 'active'; ?>">
+							<a href="?p=<?php echo $i; ?>"><?php echo $i; ?></a>
+					</li>
+					<?php
+						endfor;
+					?>
+					<?php if($currentPageNum != $maxPageNum): ?>
+						<li class="list-item"><a href="?p=<?php echo $maxPageNum; ?>">&gt;</a></li>
+					<?php endif; ?>
 				</ul>
 			</div>
 		</section>

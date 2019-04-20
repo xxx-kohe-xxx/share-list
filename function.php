@@ -269,6 +269,7 @@ function getUser($u_id){
 	// return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
+// リストデータを取得
 function getList($u_id, $l_id){
 	debug('リスト情報を取得します。');
 	debug('ユーザーID:'.$u_id);
@@ -293,7 +294,44 @@ function getList($u_id, $l_id){
 		error_log('エラー発生:'.$e->getMessage());
 	}
 }
+// リスト一覧のデータを取得
+function getListList($currentMinNum = 1, $span =12){
+	debug('リスト情報を取得します。');
+	// 例外処理
+	try {
+		// DBと接続
+		$dbh = dbConnect();
+		// 件数用のSQL文作成
+		$sql = 'SELECT list_id FROM lists';
+		$data = array();
+		// クエリ実行
+		$stmt = queryPost($dbh, $sql, $data);
+		$rst['total'] = $stmt->rowCount(); // 総レコード数
+		$rst['total_page'] = ceil($rst['total']/$span); // 総ページ数
+		if(!$stmt){
+			return false;
+		}
+		
+		// ページング用のSQL文作成
+		$sql  = 'SELECT * FROM lists';
+		$sql .= ' LIMIT '.$span.' OFFSET '.$currentMinNum;
+		$data = array();
+		debug('SQL:'.$sql);
+		// クエリ実行
+		$stmt = queryPost($dbh, $sql, $data);
+		if($stmt){
+			// クエリ結果のデータの全レコードを格納
+			$rst['data'] = $stmt->fetchAll();
+			return $rst;
+		}else{
+			return false;
+		}
+	} catch (Execption $e){
+		error_log('エラー発生:'.$e->getMessage());
+	}
+}
 
+// カテゴリーデータを取得
 function getCategory(){
 	debug('カテゴリー情報を取得します。');
 	// 例外処理
@@ -342,6 +380,11 @@ function sendMail($from, $to, $subject, $comment){
 // ========================================
 // その他
 // ========================================
+// サニタイズ
+function sanitize($str){
+	return htmlspecialchars($str,ENT_QUOTES);
+}
+
 // フォーム入力保持
 function getFormData($str){
 	global $dbFormData;
