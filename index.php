@@ -82,7 +82,7 @@ require('header.php');
 				<?php
 					foreach($dbListData['data'] as $key => $val):
 				?>
-				<a href="listDetail.php?l_id=<?php echo $val['list_id']; ?>" class="panel">
+				<a href="listDetail.php?l_id=<?php echo $val['list_id'].'&p='.$currentPageNum; ?>" class="panel">
 					<div class="panel-head">
 						<p class="panel-title"><?php echo sanitize($val['listname']); ?></p>
 					</div>
@@ -100,55 +100,10 @@ require('header.php');
 					endforeach;
 				?>
 			</div>
-
-			<div class="pagination">
-				<ul class="pagination-list">
-					<?php
-						$pageColNum = 5; // ページ項目を何項目だすか?
-						$totalPageNum = $dbListData['total_page'];
-						// 現在のページが総ページ数と同じかつ、総ページ数がページ項目数以上の場合
-						if($currentPageNum == $totalPageNum && $totalPageNum >= $pageColNum){
-							$minPageNum = $currentPageNum - 4;
-							$maxPageNum = $currentPageNum;
-						// 現在のページが総ページ数の1ページ前の場合
-						}elseif($currentPageNum == ($totalPageNum - 1) && $totalPageNum >= $pageColNum){
-							$minPageNum = $currentPageNum - 3;
-							$maxPageNum = $currentPageNum + 1;
-						// 現在のページが2の場合
-						}elseif($currentPageNum == 2 && $totalPageNum >= $pageColNum){
-							$minPageNum = $currentPageNum - 1;
-							$maxPageNum = $currentPageNum + 3;
-						// 現在のページが1の場合
-						}elseif($currentPageNum == 1 && $totalPageNum >= $pageColNum){
-							$minPageNum = $currentPageNum;
-							$maxPageNum = 5;
-						// 総ページ数がページ項目数より少ない場合
-						}elseif($totalPageNum < $pageColNum){
-							$minPageNum = 1;
-							$maxPageNum = $totalPageNum;
-						// それ以外の場合
-						}else{
-							$minPageNum = $currentPageNum - 2;
-							$maxPageNum = $currentPageNum + 2;
-						}
-					?>
-					<?php if($currentPageNum != 1): ?>
-						<li class="list-item"><a href="?p=1">&lt;</a></li>
-					<?php endif; ?>
-					<?php
-						for($i = $minPageNum; $i <= $maxPageNum; $i++):
-					?>
-					<li class="list-item <?php if($currentPageNum == $i) echo 'active'; ?>">
-							<a href="?p=<?php echo $i; ?>"><?php echo $i; ?></a>
-					</li>
-					<?php
-						endfor;
-					?>
-					<?php if($currentPageNum != $maxPageNum): ?>
-						<li class="list-item"><a href="?p=<?php echo $maxPageNum; ?>">&gt;</a></li>
-					<?php endif; ?>
-				</ul>
-			</div>
+			
+			<?php
+				pagenation($currentPageNum, $dbListData['total_page']);
+			?>
 		</section>
 
 	</div>

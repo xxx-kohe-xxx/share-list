@@ -92,7 +92,6 @@ function validRequired($str, $key){
 		debug('未入力チェックOK');
 	}
 }
-
 //バリデーションチェック関数(Email形式チェック)
 function validEmail($str,$key){
 	if(!preg_match("/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/",$str)){
@@ -102,7 +101,6 @@ function validEmail($str,$key){
 		debug('Email形式チェックOK');
 	}
 }
-
 // バリデーションチェック関数(Email重複チェック)
 function validEmailDup($email){
 	global $err_msg;
@@ -125,7 +123,6 @@ function validEmailDup($email){
 		$err_msg['common'] = MSG07;
 	}
 }
-
 // バリデーションチェック関数(同値チェック)
 function validMatch($str1, $str2, $key){
 	if($str1 !== $str2){
@@ -133,7 +130,6 @@ function validMatch($str1, $str2, $key){
 		$err_msg[$key] = MSG03;
 	}
 }
-
 // バリデーションチェック関数(最小文字数チェック)
 function validMinLen($str, $key, $min = 6){
 	if(mb_strlen($str) < $min){
@@ -143,7 +139,6 @@ function validMinLen($str, $key, $min = 6){
 		debug('最小文字数チェックOK');
 	}
 }
-
 // バリデーションチェック関数(最大文字数チェック)
 function validMaxLen($str, $key, $max = 255){
 	if(mb_strlen($str) > $max){
@@ -153,7 +148,6 @@ function validMaxLen($str, $key, $max = 255){
 		debug('最大文字数チェックOK');
 	}
 }
-
 // バリデーションチェック関数(半角チェック)
 function validHalf($str, $key){
 	if(!preg_match("/^[a-zA-Z0-9]+$/", $str)){
@@ -163,7 +157,6 @@ function validHalf($str, $key){
 		debug('半角チェックOK');
 	}
 }
-
 // 固定長チェック
 function validLength($str, $key, $len = 8){
 	if(mb_strlen($str) !== $len){
@@ -173,7 +166,6 @@ function validLength($str, $key, $len = 8){
 		debug('固定長チェックOK');
 	}
 }
-
 // パスワードチェック関数
 function validPass($str, $key){
 	global $err_msg;
@@ -194,7 +186,6 @@ function validSelect($str, $key){
 		$err_msg[$key] = MSG16;
 	}
 }
-
 // エラーメッセージ表示
 function getErrMsg($key){
 	global $err_msg;
@@ -203,12 +194,9 @@ function getErrMsg($key){
 	}
 }
 
-
-
 // ========================================
 // データベース
 // ========================================
-
 // DB接続関数
 function dbConnect(){
 	// DBへの接続準備
@@ -228,7 +216,6 @@ function dbConnect(){
 	$dbh = new PDO($dsn, $user, $password, $options);
 	return $dbh;
 }
-
 // SQL実行関数
 function queryPost($dbh, $sql, $data){
 	// クエリ作成
@@ -243,7 +230,6 @@ function queryPost($dbh, $sql, $data){
 	debug('クエリ成功。');
 	return $stmt;
 }
-
 // ユーザーデータ取得関数
 function getUser($u_id){
 	debug('ユーザー情報を取得します。');
@@ -268,7 +254,6 @@ function getUser($u_id){
 	// クエリデータを返す
 	// return $stmt->fetch(PDO::FETCH_ASSOC);
 }
-
 // リストデータを取得
 function getList($u_id, $l_id){
 	debug('リスト情報を取得します。');
@@ -330,7 +315,32 @@ function getListList($currentMinNum = 1, $span =12){
 		error_log('エラー発生:'.$e->getMessage());
 	}
 }
+// リスト情報を取得
+function getListOne($l_id){
+	debug('リスト情報を取得します。');
+	debug('リストID:'.$l_id);
+	// 例外処理
+	try {
+		// DB接続
+		$dbh = dbConnect();
+		// SQL文作成
+		$sql = 'SELECT list_id, listname, l.category_id, user_id, listcontent, l.create_date, l.update_date, categoryname
+		FROM lists AS l LEFT JOIN category AS c ON l.category_id = c.category_id
+		WHERE list_id = :l_id AND l.del_flg = 0 AND c.del_flg = 0';
+		$data = array(':l_id' => $l_id);
+		// クエリ実行
+		$stmt = queryPost($dbh, $sql, $data);
 
+		if($stmt){
+			// クエリ結果のデータを1レコード返却
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+		}else{
+			return false;
+		}
+	} catch(Execption $e){
+		error_log('エラー発生:'.$e->getMessage());
+	}
+}
 // カテゴリーデータを取得
 function getCategory(){
 	debug('カテゴリー情報を取得します。');
@@ -375,8 +385,6 @@ function sendMail($from, $to, $subject, $comment){
 	}
 }
 
-
-
 // ========================================
 // その他
 // ========================================
@@ -384,7 +392,6 @@ function sendMail($from, $to, $subject, $comment){
 function sanitize($str){
 	return htmlspecialchars($str,ENT_QUOTES);
 }
-
 // フォーム入力保持
 function getFormData($str){
 	global $dbFormData;
@@ -430,5 +437,71 @@ function makeRandKey($length = 8){
 		$str .= $chars[mt_rand(0,61)];
 	}
 	return $str;
+}
+// ページング
+// $currentPageNum: 現在のページ
+// $totalPageNum: 総ページ数
+// $link: 検索用GETパラメータリンク
+// $pageColNum: 表示ページ項目数
+function pagenation($currentPageNum, $totalPageNum, $link = '', $pageColNum = 5){
+	// 現在のページが総ページ数と同じかつ、総ページ数がページ項目数以上の場合
+	if($currentPageNum == $totalPageNum && $totalPageNum >= $pageColNum){
+		$minPageNum = $currentPageNum - 4;
+		$maxPageNum = $currentPageNum;
+	// 現在のページが総ページ数の1ページ前の場合
+	}elseif($currentPageNum == ($totalPageNum - 1) && $totalPageNum >= $pageColNum){
+		$minPageNum = $currentPageNum - 3;
+		$maxPageNum = $currentPageNum + 1;
+	// 現在のページが2の場合
+	}elseif($currentPageNum == 2 && $totalPageNum >= $pageColNum){
+		$minPageNum = $currentPageNum - 1;
+		$maxPageNum = $currentPageNum + 3;
+	// 現在のページが1の場合
+	}elseif($currentPageNum == 1 && $totalPageNum >= $pageColNum){
+		$minPageNum = $currentPageNum;
+		$maxPageNum = 5;
+	// 総ページ数がページ項目数より少ない場合
+	}elseif($totalPageNum < $pageColNum){
+		$minPageNum = 1;
+		$maxPageNum = $totalPageNum;
+	// それ以外の場合
+	}else{
+		$minPageNum = $currentPageNum - 2;
+		$maxPageNum = $currentPageNum + 2;
+	}
+
+	echo '<div class="pagination">';
+		echo '<ul class="pagination-list">';
+		if($currentPageNum != 1){
+			echo '<li class="list-item"><a href="?p=1">&lt;</a></li>';
+		}
+		for($i = $minPageNum; $i <= $maxPageNum; $i++){
+			echo '<li class="list-item ';
+			if($currentPageNum == $i){ echo 'active';}
+			echo '"><a href="?p='.$i.$link.'">'.$i.'</a></li>';
+		}
+		if($currentPageNum != $maxPageNum){
+			echo '<li class="list-item"><a href="?p='.$maxPageNum.$link.'">&gt;</a></li>';
+		}
+		echo '</ul>';
+	echo '</div>';
+}
+// GETパラメータ付与
+// $del_key: 付与から取り除きたいGETパラメータのキー
+function appendGetParam($arr_del_key){
+	if(!empty($_GET)){
+		$str = '?';
+		debug('GETパラメータ:'.print_r($_GET,true));
+		foreach($_GET as $key => $val){
+			debug('key:'.print_r($key, true));
+			debug('val:'.print_r($val, true));
+			debug('arr_del_key:'.print_r($arr_del_key,true));
+			if(!in_array($key, $arr_del_key, true)){
+				$str .= $key .'='.$val.'&';
+			}
+		}
+		$str = mb_substr($str, 0, -1, "UTF-8");
+		echo $str;
+	}
 }
 ?>
