@@ -58,7 +58,7 @@ require('header.php');
 						<li>テキストテキスト</li>
 					</ul>
 				</div>
-				<a href="index.php<?php appendGetParam(array('l_id')); ?>">&lt; リスト一覧に戻る</a>
+				<a href="index.php<?php echo appendGetParam(array('l_id')); ?>">&lt; リスト一覧に戻る</a>
 			</div>
 			<!-- コメント -->
 			<div class="comment">

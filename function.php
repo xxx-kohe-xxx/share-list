@@ -205,7 +205,7 @@ function dbConnect(){
 	$password = 'root';
 	$options = array(
 		// SQL実行失敗時にはエラーコードのみ設定
-		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+		PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT, //PDO::ERRMODE_EXCEPTION,
 		// デフォルトフェッチモードを連想配列形式に設定
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 		// バッファードクエリを使う(一度に結果セットをすべて取得し、サーバー負荷を軽減)
@@ -280,7 +280,7 @@ function getList($u_id, $l_id){
 	}
 }
 // リスト一覧のデータを取得
-function getListList($currentMinNum = 1, $span =12){
+function getListList($currentMinNum = 1, $category, $span =12){
 	debug('リスト情報を取得します。');
 	// 例外処理
 	try {
@@ -288,6 +288,7 @@ function getListList($currentMinNum = 1, $span =12){
 		$dbh = dbConnect();
 		// 件数用のSQL文作成
 		$sql = 'SELECT list_id FROM lists';
+		if(!empty($category)) $sql .= ' WHERE category_id = '.$category;
 		$data = array();
 		// クエリ実行
 		$stmt = queryPost($dbh, $sql, $data);
@@ -299,6 +300,7 @@ function getListList($currentMinNum = 1, $span =12){
 		
 		// ページング用のSQL文作成
 		$sql  = 'SELECT * FROM lists';
+		if(!empty($category)) $sql .= ' WHERE category_id = '.$category;
 		$sql .= ' LIMIT '.$span.' OFFSET '.$currentMinNum;
 		$data = array();
 		debug('SQL:'.$sql);
@@ -393,31 +395,36 @@ function sanitize($str){
 	return htmlspecialchars($str,ENT_QUOTES);
 }
 // フォーム入力保持
-function getFormData($str){
+function getFormData($str, $flg = false){
+	if($flg){
+		$method = $_GET;
+	}else{
+		$method = $_POST;
+	}
 	global $dbFormData;
 	// ユーザーデータがある場合
 	if(!empty($dbFormData)){
 		// フォームのエラーがある場合
 		if(!empty($err_msg[$str])){
 			// POSTにデータがある場合
-			if(isset($_POST[$str])){
-				return $_POST[$str];
+			if(isset($method[$str])){
+				return sanitize($method[$str]);
 			}else{
 				// ない場合(フォームにエラーがある=POSTされているはずなのでまずありえない)はDBの情報を表示
-				return $dbFormData[$str];
+				return sanitize($dbFormData[$str]);
 			}
 		}else{
 			// POSTにデータがあり、DBの情報と違う場合(このフォームも変更していてエラーはないが、ほかのフォームで引っかかっている状態)
-			if(isset($_POST[$str]) && $_POST[$str] !== $dbFormData[$str]){
-				return $_POST[$str];
+			if(isset($method[$str]) && $method[$str] !== $dbFormData[$str]){
+				return sanitize($method[$str]);
 			}else{
 				// 変更なし
-				return $dbFormData[$str];
+				return sanitize($dbFormData[$str]);
 			}
 		}
 	}else{
-		if(isset($_POST[$str])){
-			return $_POST[$str];
+		if(isset($method[$str])){
+			return sanitize($method[$str]);
 		}
 	}
 }
@@ -444,6 +451,7 @@ function makeRandKey($length = 8){
 // $link: 検索用GETパラメータリンク
 // $pageColNum: 表示ページ項目数
 function pagenation($currentPageNum, $totalPageNum, $link = '', $pageColNum = 5){
+	if(!empty($link)){ $link = '&c_id='.$link; }
 	// 現在のページが総ページ数と同じかつ、総ページ数がページ項目数以上の場合
 	if($currentPageNum == $totalPageNum && $totalPageNum >= $pageColNum){
 		$minPageNum = $currentPageNum - 4;
@@ -473,7 +481,7 @@ function pagenation($currentPageNum, $totalPageNum, $link = '', $pageColNum = 5)
 	echo '<div class="pagination">';
 		echo '<ul class="pagination-list">';
 		if($currentPageNum != 1){
-			echo '<li class="list-item"><a href="?p=1">&lt;</a></li>';
+			echo '<li class="list-item"><a href="?p=1'.$link.'">&lt;</a></li>';
 		}
 		for($i = $minPageNum; $i <= $maxPageNum; $i++){
 			echo '<li class="list-item ';
@@ -488,20 +496,20 @@ function pagenation($currentPageNum, $totalPageNum, $link = '', $pageColNum = 5)
 }
 // GETパラメータ付与
 // $del_key: 付与から取り除きたいGETパラメータのキー
-function appendGetParam($arr_del_key){
+function appendGetParam($arr_del_key = array()){
 	if(!empty($_GET)){
 		$str = '?';
 		debug('GETパラメータ:'.print_r($_GET,true));
 		foreach($_GET as $key => $val){
-			debug('key:'.print_r($key, true));
-			debug('val:'.print_r($val, true));
-			debug('arr_del_key:'.print_r($arr_del_key,true));
+			// debug('key:'.print_r($key, true));
+			// debug('val:'.print_r($val, true));
+			// debug('arr_del_key:'.print_r($arr_del_key,true));
 			if(!in_array($key, $arr_del_key, true)){
 				$str .= $key .'='.$val.'&';
 			}
 		}
 		$str = mb_substr($str, 0, -1, "UTF-8");
-		echo $str;
+		return $str;
 	}
 }
 ?>
