@@ -343,6 +343,31 @@ function getListOne($l_id){
 		error_log('エラー発生:'.$e->getMessage());
 	}
 }
+// メッセージボード(コメント欄)データを取得
+function getComments($id){
+	debug('comment情報を取得します。');
+	debug('掲示板ID:'.$id);
+	// 例外処理
+	try {
+		// DB接続
+		$dbh = dbConnect();
+		// SQL文作成
+		$sql = 'SELECT comment_id, list_id, user_id, comment, del_flg, create_date FROM comments WHERE list_id = :l_id AND del_flg = 0 ORDER BY create_date ASC';
+		$data = array(':l_id' => $id);
+		// クエリ実行
+		$stmt = queryPost($dbh, $sql, $data);
+
+		if($stmt){
+			// クエリ結果の全データを返却
+			return $stmt->fetchALL();
+		}else{
+			return false;
+		}
+	}catch (Exception $e){
+		error_log('エラー発生:'.$e->getMessage());
+	}
+}
+
 // カテゴリーデータを取得
 function getCategory(){
 	debug('カテゴリー情報を取得します。');
@@ -499,7 +524,7 @@ function pagenation($currentPageNum, $totalPageNum, $link = '', $pageColNum = 5)
 function appendGetParam($arr_del_key = array()){
 	if(!empty($_GET)){
 		$str = '?';
-		debug('GETパラメータ:'.print_r($_GET,true));
+		// debug('GETパラメータ:'.print_r($_GET,true));
 		foreach($_GET as $key => $val){
 			// debug('key:'.print_r($key, true));
 			// debug('val:'.print_r($val, true));
