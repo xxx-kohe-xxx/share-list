@@ -195,6 +195,30 @@ function getErrMsg($key){
 }
 
 // ========================================
+// ログイン認証
+// ========================================
+function isLogin(){
+	if(!empty($_SESSION['login_date'])){
+		// ログインしている場合
+		debug('ログイン済みユーザーです。');
+
+		if(($_SESSION['login_date'] + $_SESSION['login_limit']) < time()){
+			debug('ログイン有効期限が切れています。');
+			// セッションを削除(ログアウト)
+			session_destroy();
+			return false;
+		}else{
+			debug('ログイン有効期限内です。');
+			return true;
+		}
+
+	}else{
+		debug('未ログインユーザーです。');
+		return false;
+	}
+}
+
+// ========================================
 // データベース
 // ========================================
 // DB接続関数
@@ -389,6 +413,35 @@ function getCategory(){
 		}
 	} catch(Exception $e){
 		error_log('エラー発生:'.$e->getMessage());
+	}
+}
+
+function isLike($u_id,$l_id){
+	debug('お気に入り情報があるか確認します。');
+	debug('ユーザーID: '.$u_id);
+	debug('リストID: '.$l_id);
+
+	// 例外処理
+	try {
+		// DB接続
+		$dbh = dbConnect();
+		// SQL文作成
+		$sql = 'SELECT list_id, user_id FROM likes WHERE list_id = :l_id AND user_id = :u_id';
+		$data = array(':l_id' => $l_id, ':u_id' => $u_id);
+		// クエリ実行
+		$stmt = queryPost($dbh, $sql, $data);
+		
+		if($stmt->rowCount()){
+			// レコードがある場合
+			debug('お気に入りです。');
+			return true;
+		}else{
+			debug('特に気に入ってはいません。');
+			return false;
+		}
+
+	} catch(Exception $e) {
+		error_log('エラー発生: '.$e->getMessage());
 	}
 }
 

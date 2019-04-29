@@ -112,6 +112,22 @@ require('head.php');
 ?>
 
 <body class="page-listDetail page-2colum page-logined">
+	<style>
+		/* ========================================
+			お気に入りアイコン
+		======================================== */
+		.icn-like {
+			float: left;
+			color: #ddd;
+		}
+		.icn-like:hover {
+			cursor: pointer;
+		}
+		.icn-like.active{
+			float: left;
+			color: #eeee00;
+		}
+	</style>
 
 	<!-- メニュー -->
 <?php
@@ -130,6 +146,7 @@ require('header.php');
 			<!-- リストの詳細 -->
 			<div class="listDetail">
 				<div class="listDetail-head">
+					<i class="fas fa-star icn-like js-click-like <?php if(isLike($_SESSION['user_id'], $l_id)){echo 'active'; } ?>" aria-hidden="true" data-listid="<?php echo sanitize($l_id); ?>"></i>
 					<h2>リスト名: <?php echo sanitize($viewData['listname']); ?></h2>
 					<h3>カテゴリー名: <?php echo sanitize($viewData['categoryname']); ?></h3>
 				</div>
@@ -192,13 +209,13 @@ require('header.php');
 				</div>
 			</div>
 				
-			</section>
+		</section>
 		
-		<script>
+		<!-- <script>
 			$(function(){
 				$('#js-scroll-bottom').animate({scrollTop:$('#js-scroll-bottom')[0].scrollHeight},'fast');
 			});
-		</script>
+		</script> -->
 
 		<!-- サイドバー -->
 		<?php
