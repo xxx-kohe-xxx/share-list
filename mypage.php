@@ -2,13 +2,25 @@
 // 共通変数・関数ファイル読み込み
 require('function.php');
 
-debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
-debug('「　マイページ');
-debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
+debug('========== マイページ ==========');
 debugLogStart();
 
+
+// ========================================
+// 画面処理
+// ========================================
 // ログイン認証
 require('auth.php');
+
+// 画面表示用データ取得
+// ========================================
+$u_id = $_SESSION['user_id'];
+// DBからリストデータを取得
+$listData = getMyList($u_id);
+debug('リスト情報($listData): '.print_r($listData,true));
+// DBからお気に入りデータを取得
+$likeData = getMyLike($u_id);
+debug('お気に入り情報($likeData): '.print_r($likeData,true));
 
 ?>
 <?php
@@ -34,17 +46,20 @@ require('header.php');
 
 		<!-- メイン -->
 		<section id="main">
+
 			<section class="list panel-list">
-				<h2 class="title">
-					リスト 一覧
-				</h2>
-				<a href="listDetail.html" class="panel">
+				<h2 class="title">リスト 一覧</h2>
+				<?php
+					if(!empty($listData)):
+						foreach($listData as $key => $val):
+				?>
+				<a href="registList.php<?php echo (!empty(appendGetParam())) ? appendGetParam().'&l_id='.$val['list_id'] : '?l_id='.$val['list_id']; ?>" class="panel">
 					<div class="panel-head">
-						<p class="panel-title">リスト1</p>
+						<p class="panel-title"><?php echo sanitize($val['listname']); ?></p>
 					</div>
 					<div class="panel-body">
 						<ul>
-							<li>テキストテキスト</li>
+							<li><?php echo sanitize($val['listcontent']) ?></li>
 							<li>テキストテキスト</li>
 							<li>テキストテキスト</li>
 							<li>テキストテキスト</li>
@@ -52,61 +67,25 @@ require('header.php');
 						</ul>
 					</div>
 				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト2</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト3</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト4</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
+				<?php
+						endforeach;
+					endif;
+				?>
 			</section>
 
 			<section class="list panel-list">
-				<h2 class="title">
-					お気に入り一覧
-				</h2>
-				<a href="" class="panel">
+				<h2 class="title">お気に入り一覧</h2>
+				<?php
+				if(!empty($likeData)):
+					foreach($likeData as $key => $val):
+				?>
+				<a href="listDetail.php<?php echo (!empty(appendGetParam())) ? appendGetParam().'&l_id='.$val['list_id'] : '?l_id='.$val['list_id']; ?>" class="panel">
 					<div class="panel-head">
-						<p class="panel-title">リスト1</p>
+						<p class="panel-title"><?php echo sanitize($val['listname']); ?></p>
 					</div>
 					<div class="panel-body">
 						<ul>
-							<li>テキストテキスト</li>
+							<li><?php echo sanitize($val['listcontent']); ?></li>
 							<li>テキストテキスト</li>
 							<li>テキストテキスト</li>
 							<li>テキストテキスト</li>
@@ -114,59 +93,26 @@ require('header.php');
 						</ul>
 					</div>
 				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト2</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト3</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
-				<a href="" class="panel">
-					<div class="panel-head">
-						<p class="panel-title">リスト4</p>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-						</ul>
-					</div>
-				</a>
+				<?php
+					endforeach;
+				endif;				
+				?>
 			</section>
 
-			<div class="pagination">
+			<!-- ページネーション -->
+			<div class="pagination"> 
 				<ul class="pagination-list">
-					<li class="list-item"><a href="">&lt;</a></li>
+					<?php
+						pagenation($currentPageNum, $totalPageNum, $link = '', $pageColNum = 5);
+					?>
+			
+					<!-- <li class="list-item"><a href="">&lt;</a></li>
 					<li class="list-item active"><a href="">1</a></li>
 					<li class="list-item "><a href="">2</a></li>
 					<li class="list-item "><a href="">3</a></li>
 					<li class="list-item "><a href="">4</a></li>
 					<li class="list-item "><a href="">5</a></li>
-					<li class="list-item "><a href="">&gt;</a></li>
+					<li class="list-item "><a href="">&gt;</a></li> -->
 				</ul>
 			</div>
 		</section>

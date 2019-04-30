@@ -367,6 +367,30 @@ function getListOne($l_id){
 		error_log('エラー発生:'.$e->getMessage());
 	}
 }
+// 自分の投稿したリスト情報を取得
+function getMyList($u_id){
+	debug('自分のリスト情報を取得します。');
+	debug('ユーザーID: '.$u_id);
+	// 例外処理
+	try {
+		// DB接続
+		$dbh = dbConnect();
+		// SQL文作成
+		$sql = 'SELECT * FROM lists WHERE user_id = :u_id AND del_flg = 0';
+		$data = array(':u_id' => $u_id);
+		// クエリ実行
+		$stmt = queryPost($dbh, $sql, $data);
+
+		if($stmt){
+			// クエリ結果のデータを全レコード返却
+			return $stmt->fetchAll();
+		}else{
+			return false;
+		}
+	} catch (Exception $e){
+		error_log('エラー発生: '.$e->getMessage());
+	}
+}
 // メッセージボード(コメント欄)データを取得
 function getComments($id){
 	debug('comment情報を取得します。');
@@ -441,6 +465,30 @@ function isLike($u_id,$l_id){
 		}
 
 	} catch(Exception $e) {
+		error_log('エラー発生: '.$e->getMessage());
+	}
+}
+// お気に入り情報の取得
+function getMyLike($u_id){
+	debug('お気に入り情報を取得します。');
+	debug('ユーザーID: '.$u_id);
+	// 例外処理
+	try {
+		// DB接続
+		$dbh = dbConnect();
+		// SQL文作成
+		$sql = 'SELECT * FROM likes AS lk LEFT JOIN lists AS ls ON lk.list_id = ls.list_id WHERE lk.user_id = :u_id';
+		$data = array(':u_id' => $u_id);
+		// クエリ実行
+		$stmt = queryPost($dbh, $sql, $data);
+
+		if($stmt){
+			// クエリ結果の全データを返却
+			return $stmt->fetchAll();
+		}else{
+			return false;
+		}
+	} catch(Exception $e){
 		error_log('エラー発生: '.$e->getMessage());
 	}
 }
