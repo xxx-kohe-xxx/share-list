@@ -38,7 +38,7 @@ session_regenerate_id();
 // 画面表示処理開始ログ吐き出し関数
 // ========================================
 function debugLogStart(){
-  debug('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 画面表示処理開始');
+  debug('========== 画面表示処理 開始 ==========');
   debug('セッションID: '.session_id());
   debug('セッション変数の中身: '.print_r($_SESSION,true));
   debug('現在日時タイムスタンプ: '.time());
@@ -67,7 +67,7 @@ define('MSG12','文字で入力してください'); // 固定長長さ以外で
 define('MSG13','認証キーが間違っています'); // 認証キーが一致しないとき
 define('MSG14','有効期限が切れています'); // 有効期限切れ
 define('MSG15','半角数字のみご利用できます');
-define('MSG16','正しくありません');
+define('MSG16','カテゴリを選択してください');
 define('SUC01','パスワードを変更しました');
 define('SUC02','プロフィールを変更しました');
 define('SUC03','メールを送信しました');
@@ -181,7 +181,7 @@ function validPass($str, $key){
 }
 // selectboxチェック
 function validSelect($str, $key){
-	if(!preg_match("/^[0-9]+$/",$str)){
+	if(!preg_match("/^[1-9]+$/",$str)){
 		global $err_msg;
 		$err_msg[$key] = MSG16;
 	}
@@ -278,8 +278,8 @@ function getUser($u_id){
 	// クエリデータを返す
 	// return $stmt->fetch(PDO::FETCH_ASSOC);
 }
-// リストデータを取得
-function getList($u_id, $l_id){
+// リストのメタ情報を取得
+function getListMeta($u_id, $l_id){
 	debug('リスト情報を取得します。');
 	debug('ユーザーID:'.$u_id);
 	debug('リストID:'.$l_id);
@@ -288,7 +288,7 @@ function getList($u_id, $l_id){
 
 		$dbh = dbConnect();
 		// SQL文作成
-		$sql = 'SELECT * FROM lists WHERE user_id = :u_id AND list_id = :l_id AND del_flg = 0';
+		$sql = 'SELECT list_id, listname, category_id, user_id, del_flg, create_date FROM lists WHERE user_id = :u_id AND list_id = :l_id AND del_flg = 0';
 		$data = array(':u_id' => $u_id, ':l_id' => $l_id);
 		// クエリ実行
 		$stmt = queryPost($dbh, $sql, $data);
@@ -296,6 +296,36 @@ function getList($u_id, $l_id){
 		if($stmt){
 			// クエリ結果のデータを1レコード返却
 			return $stmt->fetch(PDO::FETCH_ASSOC);
+		}else{
+			return false;
+		}
+	}	catch(Exception $e){ 
+		error_log('エラー発生:'.$e->getMessage());
+	}
+}
+// リストのコンテンツ情報を取得
+function getListContent($l_id){
+	debug('リスト情報を取得します。');
+	debug('リストID:'.$l_id);
+	// 例外処理
+	try {
+
+		$dbh = dbConnect();
+		// SQL文作成
+		$sql = 'SELECT list_content FROM list_contents WHERE list_id = :l_id';
+		$data = array(':l_id' => $l_id);
+		// クエリ実行
+		$stmt = queryPost($dbh, $sql, $data);
+		
+		if($stmt){
+      // クエリ結果のデータを全レコード返却
+      // $stmt->fetchAll();
+      // $getContents[] = '';
+      $getContents[] = array();
+      foreach($stmt as $key => $val){
+        $getContents[] = $val['list_content'];
+        }
+      return $getContents;
 		}else{
 			return false;
 		}
@@ -357,8 +387,12 @@ function getListOne($l_id){
 		// クエリ実行
 		$stmt = queryPost($dbh, $sql, $data);
 
+		// $viewData = $stmt->fetch(PDO::FETCH_ASSOC);
+		// debug('getListOne関数 $viewData:'.print_r($viewData,true));
+
 		if($stmt){
 			// クエリ結果のデータを1レコード返却
+			debug('クエリ結果があります。');
 			return $stmt->fetch(PDO::FETCH_ASSOC);
 		}else{
 			return false;
@@ -415,7 +449,6 @@ function getComments($id){
 		error_log('エラー発生:'.$e->getMessage());
 	}
 }
-
 // カテゴリーデータを取得
 function getCategory(){
 	debug('カテゴリー情報を取得します。');
@@ -439,7 +472,7 @@ function getCategory(){
 		error_log('エラー発生:'.$e->getMessage());
 	}
 }
-
+// お気に入り情報があるか確認
 function isLike($u_id,$l_id){
 	debug('お気に入り情報があるか確認します。');
 	debug('ユーザーID: '.$u_id);
@@ -517,8 +550,25 @@ function sendMail($from, $to, $subject, $comment){
 // その他
 // ========================================
 // サニタイズ
-function sanitize($str){
-	return htmlspecialchars($str,ENT_QUOTES);
+function sanitize ( $input ) {
+	$_input = array ();
+	if(is_array($input)){
+		// debug('配列です。');
+		foreach ( $input as $key => $val ) {
+		// foreach ( (array)$input as $key => $val ) {
+			if ( is_array ( $val ) ){
+				$key = htmlspecialchars ( $key );
+				$_input[$key] = sanitize ( $val );
+			} else {
+				$key = htmlspecialchars ( $key );
+				$_input[$key] = htmlspecialchars ( $val );
+			}
+		}
+	}else{
+		// debug('配列ではありません。');
+		$_input = htmlspecialchars($input);
+	}
+	return $_input;
 }
 // フォーム入力保持
 function getFormData($str, $flg = false){

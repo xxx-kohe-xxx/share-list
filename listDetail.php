@@ -12,14 +12,22 @@ debugLogStart();
 // ========================================
 // リストIDのGETパラメータを取得
 $l_id = (!empty($_GET['l_id'])) ? $_GET['l_id'] : '';
-// DBから商品データを取得
+debug('$l_id中身:'.$l_id);
+// DBからリストデータを取得
 $viewData = getListOne($l_id);
 // パラメータに不正な値が入っているかチェック
 if(empty($viewData)){
 	error_log('エラー発生:指定ページに不正な値が入りました。');
-	header("Location:index.php");
+	// header("Location:index.php");
 }
 debug('取得したDBデータ($viewData)'.print_r($viewData,true));
+
+debug('========== ここまではOK ==========');
+
+// DBからリストのコンテンツデータを取得する
+$viewContentData = getListContent($l_id);
+// debug('$viewContentData中身:'.print_r($viewContentData,true));
+
 
 // コメント機能
 // -------------------------------------
@@ -38,7 +46,7 @@ debug('取得したDBデータ($commentData)'.print_r($commentData,true));
 // 	header("Location:mypage.php");
 // }
 $listInfo = getListOne($commentData[0]['list_id']);
-debug('取得したDBデータ($listInfo)'.print_r($listInfo,true));
+debug('取得したDBデータ($listInfo):'.print_r($listInfo,true));
 // リスト情報が入っているかチェック
 // if(empty($listInfo)){
 // 	error_log('エラー発生:リスト情報が取得できませんでした');
@@ -152,11 +160,11 @@ require('header.php');
 				</div>
 				<div class="listDetail-content">
 					<ul>
-						<li><?php echo sanitize($viewData['listcontent']); ?></li>
-						<li>テキストテキスト</li>
-						<li>テキストテキスト</li>
-						<li>テキストテキスト</li>
-						<li>テキストテキスト</li>
+						<li><?php echo sanitize($viewContentData[1]); ?></li>
+						<li><?php echo sanitize($viewContentData[2]); ?></li>
+						<li><?php echo sanitize($viewContentData[3]); ?></li>
+						<li><?php echo sanitize($viewContentData[4]); ?></li>
+						<li><?php echo sanitize($viewContentData[5]); ?></li>
 					</ul>
 				</div>
 				<a href="index.php<?php echo appendGetParam(array('l_id')); ?>">&lt; リスト一覧に戻る</a>
