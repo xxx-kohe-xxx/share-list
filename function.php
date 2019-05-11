@@ -321,7 +321,7 @@ function getListContent($l_id){
       // クエリ結果のデータを全レコード返却
       // $stmt->fetchAll();
       // $getContents[] = '';
-      $getContents[] = array();
+      // $getContents[] = array();
       foreach($stmt as $key => $val){
         $getContents[] = $val['list_content'];
         }
