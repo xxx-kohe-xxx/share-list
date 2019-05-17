@@ -160,11 +160,11 @@ require('header.php');
 				</div>
 				<div class="listDetail-content">
 					<ul>
+						<li><?php echo sanitize($viewContentData[0]); ?></li>
 						<li><?php echo sanitize($viewContentData[1]); ?></li>
 						<li><?php echo sanitize($viewContentData[2]); ?></li>
 						<li><?php echo sanitize($viewContentData[3]); ?></li>
 						<li><?php echo sanitize($viewContentData[4]); ?></li>
-						<li><?php echo sanitize($viewContentData[5]); ?></li>
 					</ul>
 				</div>
 				<a href="index.php<?php echo appendGetParam(array('l_id')); ?>">&lt; リスト一覧に戻る</a>
