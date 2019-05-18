@@ -59,11 +59,11 @@ require('header.php');
 					</div>
 					<div class="panel-body">
 						<ul>
-							<li><?php echo sanitize($val['listcontent']) ?></li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
+							<li><?php echo sanitize($val['content1']) ?></li>
+							<li><?php echo sanitize($val['content2']) ?></li>
+							<li><?php echo sanitize($val['content3']) ?></li>
+							<li><?php echo sanitize($val['content4']) ?></li>
+							<li><?php echo sanitize($val['content5']) ?></li>
 						</ul>
 					</div>
 				</a>
@@ -100,11 +100,11 @@ require('header.php');
 			</section>
 
 			<!-- ページネーション -->
-			<div class="pagination"> 
-				<ul class="pagination-list">
+			<!-- <div class="pagination">  -->
+				<!-- <ul class="pagination-list">
 					<?php
-						pagenation($currentPageNum, $totalPageNum, $link = '', $pageColNum = 5);
-					?>
+						// pagenation($currentPageNum, $totalPageNum, $link = '', $pageColNum = 5);
+					?> -->
 			
 					<!-- <li class="list-item"><a href="">&lt;</a></li>
 					<li class="list-item active"><a href="">1</a></li>
@@ -113,8 +113,8 @@ require('header.php');
 					<li class="list-item "><a href="">4</a></li>
 					<li class="list-item "><a href="">5</a></li>
 					<li class="list-item "><a href="">&gt;</a></li> -->
-				</ul>
-			</div>
+				<!-- </ul> -->
+			<!-- </div> -->
 		</section>
 
 		<!-- サイドバー -->
