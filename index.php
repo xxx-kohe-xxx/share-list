@@ -2,9 +2,7 @@
 // 共通変数・関数の読み込み
 require('function.php');
 
-debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
-debug('「　トップページ');
-debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
+debug('========== トップページ ==========');
 debugLogStart();
 
 // =====================================
@@ -35,10 +33,9 @@ $dbCategoryData = getCategory();
 debug('現在のページ:'.$currentPageNum);
 // debug('フォーム用DBデータ:'.print_r($dbFormData,true));
 // debug('カテゴリデータ:'.print_r($dbCategoryData,true));
-debug('リストデータ:'.print_r($dbListData,true));
+debug('リストデータ($dbListData):'.print_r($dbListData,true));
 
-debug('画面表示処理終了 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
-
+debug('========== 画面表示処理終了 ==========');
 ?>
 
 
@@ -101,11 +98,11 @@ require('header.php');
 					</div>
 					<div class="panel-body">
 						<ul>
-							<li><?php echo sanitize($val['listcontent']); ?></li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
+							<li><?php echo sanitize($val['content1']); ?></li>
+							<li><?php echo sanitize($val['content2']); ?></li>
+							<li><?php echo sanitize($val['content3']); ?></li>
+							<li><?php echo sanitize($val['content4']); ?></li>
+							<li><?php echo sanitize($val['content5']); ?></li>
 						</ul>
 					</div>
 				</a>
