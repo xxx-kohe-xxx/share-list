@@ -1,9 +1,7 @@
 <?php
 // 共通変数・関数の読み込み
 require('function.php');
-debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
-debug('「　リスト登録ページ');
-debug('「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「「');
+debug('========== リスト登録ページ ==========');
 debugLogStart();
 
 // ログイン認証
@@ -23,9 +21,9 @@ $dbFormData = (!empty($l_id)) ? getList($_SESSION['user_id'], $l_id) : '';
 $edit_flg = (empty($dbFormData)) ? false : true;
 // DBからカテゴリデータを取得
 $dbCategoryData = getCategory();
-debug('リストID:'.$l_id);
-debug('フォーム用DBデータ:'.print_r($dbFormData,true));
-debug('カテゴリデータ:'.print_r($dbCategoryData,true));
+debug('リストID($l_id):'.$l_id);
+debug('フォーム用DBデータ($dbFormData):'.print_r($dbFormData,true));
+// debug('カテゴリデータ($dbCategoryData):'.print_r($dbCategoryData,true));
 
 // パラメータ改ざんチェック
 // ========================================
@@ -45,6 +43,7 @@ if(!empty($_POST)){
 	$listname = $_POST['listname'];
 	$category = $_POST['category_id'];
 	$content = $_POST['listcontent'];
+	debug('リストコンテンツ($content):'.print_r($content,true));
 
 	// 更新の場合はDBの情報と入力情報が異なる場合にバリデーションを行う
 	if(empty($dbFormData)){
@@ -55,7 +54,9 @@ if(!empty($_POST)){
 		// セレクトボックスチェック
 		validSelect($category, 'category_id');
 		// 最大文字数チェック(コメント)
-		validMaxLen($content, 'listcontent', 100);
+		foreach($content as $key => $val){
+			validMaxLen($val, 'listcontent', 100);
+		}
 	}else{
 		if($dbFormData['listname'] !== $listname){
 			// 未入力チェック
@@ -88,8 +89,9 @@ if(!empty($_POST)){
 				$data = array(':listname' => $listname, ':category' => $category, ':content' => $content, ':u_id' => $_SESSION['user_id'], ':l_id' => $l_id);
 			}else{
 				debug('DB新規登録です。');
-				$sql = 'INSERT INTO lists (listname, category_id, listcontent, user_id, create_date) VALUES (:listname, :category, :content, :u_id, :date)';
-				$data = array(':listname' => $listname, ':category' => $category, ':content' => $content, ':u_id' => $_SESSION['user_id'], ':date' => date('Y-m-d H:i:s'));
+				$sql = 'INSERT INTO lists (listname, category_id, content1, content2, content3, content4, content5, user_id, create_date) VALUES (:listname, :category, :content1, :content2, :content3, :content4, :content5, :u_id, :date)';
+				
+				$data = array(':listname' => $listname, ':category' => $category, ':content1' => $content[0], ':content2' => $content[1], ':content3' => $content[2], ':content4' => $content[3], ':content5' => $content[4], ':u_id' => $_SESSION['user_id'], ':date' => date('Y-m-d H:i:s'));
 			}
 			debug('SQL:'.$sql);
 			debug('流し込みデータ:'.print_r($data,true));
@@ -111,7 +113,7 @@ if(!empty($_POST)){
 		debug('エラー内容:'.print_r($err_msg,true));
 	}
 }
-debug('画面表示処理終了　<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+debug('＝＝＝＝＝＝＝＝＝ 画面表示処理終了 ＝＝＝＝＝＝＝＝＝');
 
 ?>
 
@@ -171,7 +173,12 @@ require('head.php');
 					</div>
 					<label class="<?php if(!empty($err_msg['listcontent'])) echo 'err'; ?>">
 							リスト内容
-							<input type="text" name="listcontent" value="<?php echo getFormData('listcontent'); ?>">
+							<input type="text" name="listcontent[]" value="<?php echo $_POST['listcontent'][0]; ?>">
+							<input type="text" name="listcontent[]" value="<?php echo $_POST['listcontent'][1]; ?>">
+							<input type="text" name="listcontent[]" value="<?php echo $_POST['listcontent'][2]; ?>">
+							<input type="text" name="listcontent[]" value="<?php echo $_POST['listcontent'][3]; ?>">
+							<input type="text" name="listcontent[]" value="<?php echo $_POST['listcontent'][4]; ?>">
+							
 					</label>
 					<div class="area-msg">
 						<?php 
