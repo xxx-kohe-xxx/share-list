@@ -53,7 +53,7 @@ require('header.php');
 					if(!empty($listData)):
 						foreach($listData as $key => $val):
 				?>
-				<a href="registList.php<?php echo (!empty(appendGetParam())) ? appendGetParam().'&l_id='.$val['list_id'] : '?l_id='.$val['list_id']; ?>" class="panel">
+				<a href="listDetail.php<?php echo (!empty(appendGetParam())) ? appendGetParam().'&l_id='.$val['list_id'] : '?l_id='.$val['list_id']; ?>" class="panel">
 					<div class="panel-head">
 						<p class="panel-title"><?php echo sanitize($val['listname']); ?></p>
 					</div>
@@ -85,11 +85,11 @@ require('header.php');
 					</div>
 					<div class="panel-body">
 						<ul>
-							<li><?php echo sanitize($val['listcontent']); ?></li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
-							<li>テキストテキスト</li>
+						<li><?php echo sanitize($val['content1']) ?></li>
+						<li><?php echo sanitize($val['content2']) ?></li>
+						<li><?php echo sanitize($val['content3']) ?></li>
+						<li><?php echo sanitize($val['content4']) ?></li>
+						<li><?php echo sanitize($val['content5']) ?></li>
 						</ul>
 					</div>
 				</a>

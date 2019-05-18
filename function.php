@@ -380,7 +380,7 @@ function getListOne($l_id){
 		// DB接続
 		$dbh = dbConnect();
 		// SQL文作成
-		$sql = 'SELECT list_id, listname, l.category_id, user_id, listcontent, l.create_date, l.update_date, categoryname
+		$sql = 'SELECT list_id, listname, l.category_id, user_id, content1, content2, content3, content4, content5, l.create_date, l.update_date, categoryname
 		FROM lists AS l LEFT JOIN category AS c ON l.category_id = c.category_id
 		WHERE list_id = :l_id AND l.del_flg = 0 AND c.del_flg = 0';
 		$data = array(':l_id' => $l_id);

@@ -20,12 +20,12 @@ if(empty($viewData)){
 	error_log('エラー発生:指定ページに不正な値が入りました。');
 	// header("Location:index.php");
 }
-debug('取得したDBデータ($viewData)'.print_r($viewData,true));
+debug('取得したDBデータ($viewData): '.print_r($viewData,true));
 
 debug('========== ここまではOK ==========');
 
 // DBからリストのコンテンツデータを取得する
-$viewContentData = getListContent($l_id);
+// $viewContentData = getListContent($l_id);
 // debug('$viewContentData中身:'.print_r($viewContentData,true));
 
 
@@ -45,7 +45,7 @@ debug('取得したDBデータ($commentData)'.print_r($commentData,true));
 // 	error_log('エラー発生:指定ページに不正な値が入りました。');
 // 	header("Location:mypage.php");
 // }
-$listInfo = getListOne($commentData[0]['list_id']);
+$listInfo = getListOne($l_id);
 debug('取得したDBデータ($listInfo):'.print_r($listInfo,true));
 // リスト情報が入っているかチェック
 // if(empty($listInfo)){
@@ -160,11 +160,11 @@ require('header.php');
 				</div>
 				<div class="listDetail-content">
 					<ul>
-						<li><?php echo sanitize($viewContentData[1]); ?></li>
-						<li><?php echo sanitize($viewContentData[2]); ?></li>
-						<li><?php echo sanitize($viewContentData[3]); ?></li>
-						<li><?php echo sanitize($viewContentData[4]); ?></li>
-						<li><?php echo sanitize($viewContentData[5]); ?></li>
+						<li><?php echo sanitize($viewData['content1']); ?></li>
+						<li><?php echo sanitize($viewData['content2']); ?></li>
+						<li><?php echo sanitize($viewData['content3']); ?></li>
+						<li><?php echo sanitize($viewData['content4']); ?></li>
+						<li><?php echo sanitize($viewData['content5']); ?></li>
 					</ul>
 				</div>
 				<a href="index.php<?php echo appendGetParam(array('l_id')); ?>">&lt; リスト一覧に戻る</a>
