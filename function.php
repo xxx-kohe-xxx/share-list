@@ -621,6 +621,45 @@ function makeRandKey($length = 8){
 	}
 	return $str;
 }
+
+// 画像処理
+function uploadImg($file, $key){
+	debug('画像アップロード処理開始');
+	debug('FILE情報:'.print_r($file,true));
+
+	if(isset($file['error']) && is_int($file['error'])) {
+		try {
+			switch ($file['error']){
+				case UPLOAD_ERR_OK:
+					break;
+				case UPLOAD_ERR_NO_FILE:
+					throw new RuntimeException('ファイルが選択されていません');
+				case UPLOAD_ERR_INI_SIZE:
+				case UPLOAD_ERR_FORM_SIZE:
+					throw new RuntimeException('ファイルサイズが大きすぎます');
+				default:
+					throw new RuntimeException('その他のエラーが発生しました');
+			}
+			$type = @exif_imagetype($file['tmp_name']);
+			if(!in_array($type, [IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG], true)){
+				throw new RuntimeException('画像形式が未対応です');
+			}
+			$path = 'uploads/'.sha1_file($file['tmp_name']).image_type_to_extension($type);
+			if(!move_uploaded_file($file['tmp_name'], $path)){
+				throw new RuntimeException('ファイル保存時にエラーが発生しました');
+			}
+			chmod($path, 0644);
+			debug('ファイルは正常にアップロードされました');
+			debug('ファイルパス:'.$path);
+			return $path;
+		} catch (RuntimeException $e){
+			debug($e->getMessage());
+			global $err_msg;
+			$err_msg[$key] = $e->getMessage();
+		}
+	}
+}
+
 // ページング
 // $currentPageNum: 現在のページ
 // $totalPageNum: 総ページ数
