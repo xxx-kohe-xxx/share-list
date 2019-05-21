@@ -464,6 +464,42 @@ input[type="submit"] {
   float: right;
 }
 
+.form .area-drop{
+  margin-bottom: 15px;
+  width: 100%;
+  height: 200px;
+  background: #f6f5f4;
+  color: #ccc;
+  text-align: center;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.form .input-file{
+  opacity: 0;
+  width: 100%;
+  height: 140px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.form .prev-img{
+  margin: 0 auto;
+  height: 100%;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.form .imgDrop-container{
+  width: 100%;
+  /* padding: 15px; */
+  box-sizing: border-box;
+}
+
 /* ========================================
 コメント
 ======================================== */
