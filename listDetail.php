@@ -22,7 +22,6 @@ if(empty($viewData)){
 }
 debug('取得したDBデータ($viewData): '.print_r($viewData,true));
 
-debug('========== ここまではOK ==========');
 
 // DBからリストのコンテンツデータを取得する
 // $viewContentData = getListContent($l_id);

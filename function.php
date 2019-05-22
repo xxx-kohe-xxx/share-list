@@ -401,6 +401,31 @@ function getListOne($l_id){
 		error_log('エラー発生:'.$e->getMessage());
 	}
 }
+// 自分のプロフィール画像情報を取得
+function getProfpic($u_id){
+	debug('ユーザーのプロフィール画像を取得します');
+	debug('ユーザーID: '.print_r($u_id,true));
+	try{
+		// DB接続
+		$dbh = dbConnect();
+		// SQL文作成
+		$sql = 'SELECT profpic FROM users WHERE user_id = :u_id AND del_flg = 0';
+		$data = array(':u_id' => $u_id);
+		// クエリ実行
+		$stmt = queryPost($dbh, $sql, $data);
+		// クエリ結果を取得
+		
+		if($stmt){
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+		}else{
+			return false;
+		}
+		
+	}catch(Exception $e) {
+		error_log('エラー発生:'.$e->getMessage());
+		$err_msg['common'] = MSG07;
+	}
+}
 // 自分の投稿したリスト情報を取得
 function getMyList($u_id){
 	debug('自分のリスト情報を取得します。');
