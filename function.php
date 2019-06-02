@@ -224,9 +224,9 @@ function isLogin(){
 // DB接続関数
 function dbConnect(){
 	// DBへの接続準備
-	$dsn = 'mysql:dbname=share_list;host=localhost;charset=utf8';
-	$user = 'root';
-	$password = 'root';
+	$dsn = 'mysql:dbname=bellbellbell_sharelistdb; host=mysql7044.xserver.jp; charset=utf8';
+	$user = 'bellbellbell_sl';
+	$password = 'mzt7nRPV9NerJ9N';
 	$options = array(
 		// SQL実行失敗時にはエラーコードのみ設定
 		PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT, //PDO::ERRMODE_EXCEPTION,
@@ -658,7 +658,7 @@ function uploadImg($file, $key){
 				case UPLOAD_ERR_OK:
 					break;
 				case UPLOAD_ERR_NO_FILE:
-					throw new RuntimeException('ファイルが選択されていません');
+					throw new RuntimeException('ファイルが選択されていません');
 				case UPLOAD_ERR_INI_SIZE:
 				case UPLOAD_ERR_FORM_SIZE:
 					throw new RuntimeException('ファイルサイズが大きすぎます');

@@ -175,11 +175,12 @@ require('header.php');
 					<?php 
 						if(!empty($commentData)){
 							foreach($commentData as $key => $val){
+								$profpic = getProfpic($val['user_id']);
 								if(!empty($val['user_id']) && $val['user_id'] != $_SESSION['user_id']){
 					?>
 								<div class="msg-cnt msg-left">
 									<div class="avatar">
-										<img src="img/ch_thumb_cuddles.gif" alt="cuddles">
+										<img src="<?php echo sanitize($profpic['profpic']); ?>" alt="otherUserProfPic">
 									</div>
 									<p class="msg-inrTxt">
 										<span class="triangle"></span>
@@ -191,7 +192,7 @@ require('header.php');
 					?>
 									<div class="msg-cnt msg-right">
 										<div class="avatar">
-											<img src="img/ch_thumb_nutty.gif" alt="nutty">
+											<img src="<?php echo sanitize($profpic['profpic']); ?>" alt="myProfPic">
 										</div>
 										<p class="msg-inrTxt">
 											<span class="triangle"></span>

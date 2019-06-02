@@ -54,14 +54,14 @@ if(!empty($_POST)){
 					$auth_key = makeRandKey();
 
 					// メール送信
-					$from = 'info@webukatu.com';
+					$from = 'info@sharelist.dekitablog.com';
 					$to = $email;
 					$subject = '【パスワード再発行認証】| SHARE-LIST';
 					$comment = <<<EOT
 本メールアドレス宛にパスワード再発行のご依頼がありました。
 下記のURLにて認証キーをご入力頂くとパスワードが再発行されます。
 
-パスワード再発行認証キー入力ページ：http://localhost/list_share/passRemindRecieve.php
+パスワード再発行認証キー入力ページ：https://sharelist.dekitablog.com/passRemindRecieve.php
 認証キー：{$auth_key}
 ※認証キーの有効期限は30分となります
 
@@ -69,9 +69,9 @@ if(!empty($_POST)){
 http://localhost/list_share/passRemindSend.php
 
 ////////////////////////////////////////
-ウェブカツマーケットカスタマーセンター
-URL  http://webukatu.com/
-E-mail info@webukatu.com
+SHARE-LIST 運営
+URL  https://sharelist.dekitablog.com/
+E-mail info@sharelist.dekitablog.com
 ////////////////////////////////////////
 EOT;
 					sendMail($from, $to, $subject, $comment);

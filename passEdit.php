@@ -69,7 +69,7 @@ if(!empty($_POST)){
 
 					// メール送信
 					$username = ($userData['username']) ? $userData['username'] : '名無し';
-					$from = 'okurimoto@webukatu.com';
+					$from = 'info@sharelist.dekitablog.com';
 					$to = $userData['email'];
 					$subject = 'パスワード変更通知 | SHARE-LIST';
 					$comment = <<<EOT
@@ -78,8 +78,8 @@ if(!empty($_POST)){
 
 ===============================
 SHARE-LIST 運営
-URL https://share-list
-E-mail okurimoto@webukatu.com
+URL https://sharelist.dekitablog.com/
+E-mail info@sharelist.dekitablog.com
 ===============================
 EOT;
 					sendMail($from, $to, $subject, $comment);

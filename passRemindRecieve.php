@@ -68,7 +68,7 @@ if(!empty($_POST)){
 						// debug('クエリ成功。');
 
 						// 	メール送信
-						$from = 'info@webukatu.com';
+						$from = 'info@sharelist.dekitablog.com';
 						$to = $_SESSION['auth_email'];
 						$subject = '【パスワード再発行完了】| SHARE-LIST';
 						$comment = <<<EOT
@@ -81,8 +81,8 @@ if(!empty($_POST)){
 
 ////////////////////////////////////////
 SHARE-LIST 運営
-URL  http://webukatu.com/
-E-mail info@webukatu.com
+URL  https://sharelist.dekitablog.com/
+E-mail info@sharelist.dekitablog.com
 ////////////////////////////////////////
 EOT;
 						debug($pass);

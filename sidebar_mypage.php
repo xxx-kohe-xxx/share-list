@@ -10,7 +10,7 @@ if(!empty($_SESSION)){ // セッション変数があるかどうか?(ログイ�
   debug('ユーザー情報:'.print_r($u_id,true));
   $profpic = getProfpic($u_id);
   // debug('getProfpic中身:'.print_r(getProfpic($u_id),true));
-  
+  $userName = $_SESSION['username'];
 }else{ 
   // ログインしていない場合はノーイメージの画像を表示
   $profpic['profpic'] = 'img/sample-img.png';
@@ -21,7 +21,8 @@ if(!empty($_SESSION)){ // セッション変数があるかどうか?(ログイ�
 ?>
 
 <section id="sidebar">
-  <img src="<?php  echo $profpic['profpic']; ?>" alt="プロフィール画像">
+  <img src="<?php if (!empty($profpic['profpic'])) {echo $profpic['profpic'];}else{echo 'img/sample-img.png';}  ?>" alt="プロフィール画像">
+  <p><?php if(!empty($userName)) echo $userName; ?></p>
   <a href="registList.php">リストを投稿する</a>
   <a href="profEdit.php">プロフィール編集</a>
   <a href="passEdit.php">パスワード変更</a>

@@ -135,6 +135,7 @@ section h1.title {
 }
 
 .page-title {
+  padding-top: 5px;
   font-size: 32px;
   margin-bottom: 50px;
   text-align: center;
@@ -475,6 +476,10 @@ input[type="submit"] {
   box-sizing: border-box;
 }
 
+.form .area-drop p{
+  line-height: 200px;
+}
+
 .form .input-file{
   opacity: 0;
   width: 100%;
@@ -543,7 +548,7 @@ input[type="submit"] {
 }
 
 .area-comment .msg-cnt .avatar {
-  width: 5%;
+  /* width: 5%; */
   overflow: hidden;
   float: left;
 }
@@ -556,11 +561,12 @@ input[type="submit"] {
   }
 
   .area-comment .msg-cnt .msg-inrTxt {
-    width: 85%;
+    width: 80%;
     float: left;
     border-radius: 5px;
     margin: 0 0 0 25px;
     position: relative;
+    padding-left: 5px;
   }
 
   .area-comment .msg-cnt.msg-left .msg-inrTxt {

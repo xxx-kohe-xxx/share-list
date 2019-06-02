@@ -125,7 +125,7 @@ require('head.php');
 						<label class="area-drop <?php if(!empty($err_msg['profpic'])) echo 'err'; ?>">
 							<input type="hidden" name="MAX_FILE_SIZE" value="3145728">
 							<input type="file" name="profpic" class="input-file">
-							<img src="<?php echo getFormData('profpic'); ?>" alt="" class="prev-img" style="<?php if(empty(getFormData('profpic'))) echo 'display:none;' ?>">
+							<img src="<?php echo getFormData('profpic'); ?>" alt="" class="prev-img" style="<?php if(!empty(getFormData('profpic'))) echo 'display:none;' ?>">
 							ドラッグ&ドロップ
 						</label>
 					</div>

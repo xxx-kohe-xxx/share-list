@@ -109,7 +109,7 @@ require('head.php');
 							if(!empty($err_msg['common'])) echo $err_msg['common'];//$err_msgが空じゃない場合、中身を出力する
 						?>
 					</div>
-					<label class="<?php if (!empty($err_msg['emali'])) echo 'err'; ?>">
+					<label class="<?php if(!empty($err_msg['email'])) echo 'err'; ?>">
 						Email
 						<input type="text" name="email" value="<?php if(!empty($_POST['email'])) echo $_POST['email']; ?>">
 					</label>
