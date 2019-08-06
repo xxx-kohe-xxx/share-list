@@ -224,9 +224,9 @@ function isLogin(){
 // DB接続関数
 function dbConnect(){
 	// DBへの接続準備
-	$dsn = 'mysql:dbname=bellbellbell_sharelistdb; host=mysql7044.xserver.jp; charset=utf8';
-	$user = 'bellbellbell_sl';
-	$password = 'mzt7nRPV9NerJ9N';
+	$dsn = '';
+	$user = '';
+	$password = '';
 	$options = array(
 		// SQL実行失敗時にはエラーコードのみ設定
 		PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT, //PDO::ERRMODE_EXCEPTION,
